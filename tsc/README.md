@@ -17,7 +17,7 @@ This is a checklist for TSC's to review as part of the intake process. The TSC s
 		- [X] A [RELEASE](../RELEASE.md) file that provides documentation on the release methodology, cadence, criteria, etc.
 		- [X] A [GOVERNANCE](../GOVERNANCE.md) file that documents the project’s technical governance.
 		- [X] A [SUPPORT](../SUPPORT.md) file to let users and developers know about ways to get help with your project.
-	- [ ] Complete and approve the [Technical Charter](CHARTER.md) and agree to transfer any relevant trademarks to The Linux Foundation or its affiliate, LF Projects, LLC, and to assist in filing for any relevant unregistered ones.
+	- [x] Complete and approve the [Technical Charter](CHARTER.md) and agree to transfer any relevant trademarks to The Linux Foundation or its affiliate, LF Projects, LLC, and to assist in filing for any relevant unregistered ones.
 	- [x] Submit a completed [Project Contribution Proposal](https://wiki.lfenergy.org/display/HOME/New+Project+Proposals+Process) to the TAC for consideration
 	- [x] Schedule to present at an upcoming TAC meeting ( provide date ).
 	- [x] Submit presentation to the TAC ( provide link to presentation ).
@@ -26,10 +26,10 @@ This is a checklist for TSC's to review as part of the intake process. The TSC s
 - New Project Intake
 	- Establish TSC
 		- [x] Location for TSC documents and meeting notes ( recommendation is ```tsc``` directory in main repo, and then ```meetings``` under the ```tsc``` directory )
-		- [ ] TSC members identified, added to [GOVERNANCE.md](../GOVERNANCE.md).
-		- [ ] First TSC meeting held ( [agenda](meetings/initial-meeting-agenda.md) )
-		- [ ] Elect TSC Chairperson
-		- [ ] TSC meeting cadence set and added to project calendar (https://lists.lfenergy.org/calendar)
+		- [x] TSC members identified, added to [GOVERNANCE.md](../GOVERNANCE.md).
+		- [x] First TSC meeting held ( [agenda](meetings/initial-meeting-agenda.md) )
+		- [x] Elect TSC Chairperson
+		- [x] TSC meeting cadence set and added to project calendar (https://lists.lfenergy.org/calendar)
 	- [ ] Code scan completed and any recommendations remedyed ( details at https://wiki.lfenergy.org/display/HOME/The+Linux+Foundation+License+Scanning+and+Analysis+Support+Program+for+LF+projects ).
 	- Infrastructure
 		- [ ] Source Control (Github, GitLab, something else ) and LFE Staff is an administrator, public repo.	
