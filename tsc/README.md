@@ -1,4 +1,4 @@
-# TSC Materials for [OCPP Cloud Connector]
+# TSC Materials for OCPP Cloud Connector
 
 This directory contains the meeting notes, process documentations, and other materials related to this project.
 
@@ -14,9 +14,9 @@ This is a checklist for TSC's to review as part of the intake process. The TSC s
 		- [X] A [CONTRIBUTING](../CONTRIBUTING.md) file explaining to other developers and your community of users how to contribute to the project. The file should explain what types of contributions are needed and how the process works.
 		- [X] A CODEOWNERS or [COMMITTERS](../COMMITTERS.csv) file to define individuals or teams that are responsible for code in a repository; document current project owners and current and emeritus committers. 
 		- [X] A [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md) file that sets the ground rules for participants’ behavior associated and helps to facilitate a friendly, welcoming environment. By default projects should leverage the Linux Foundation Code of Conduct unless an alternate Code of Conduct is approved prior.
-		- [ ] A [RELEASE](../RELEASE.md) file that provides documentation on the release methodology, cadence, criteria, etc.
-		- [ ] A [GOVERNANCE](../GOVERNANCE.md) file that documents the project’s technical governance.
-		- [ ] A [SUPPORT](../SUPPORT.md) file to let users and developers know about ways to get help with your project.
+		- [X] A [RELEASE](../RELEASE.md) file that provides documentation on the release methodology, cadence, criteria, etc.
+		- [X] A [GOVERNANCE](../GOVERNANCE.md) file that documents the project’s technical governance.
+		- [X] A [SUPPORT](../SUPPORT.md) file to let users and developers know about ways to get help with your project.
 	- [ ] Complete and approve the [Technical Charter](CHARTER.md) and agree to transfer any relevant trademarks to The Linux Foundation or its affiliate, LF Projects, LLC, and to assist in filing for any relevant unregistered ones.
 	- [ ] Submit a completed [Project Contribution Proposal](https://wiki.lfenergy.org/display/HOME/New+Project+Proposals+Process) to the TAC for consideration
 	- [ ] Schedule to present at an upcoming TAC meeting ( provide date ).
