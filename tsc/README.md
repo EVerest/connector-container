@@ -1,4 +1,4 @@
-# TSC Materials for [PROJECT NAME]
+# TSC Materials for [OCPP Cloud Connector]
 
 This directory contains the meeting notes, process documentations, and other materials related to this project.
 
@@ -9,9 +9,9 @@ This is a checklist for TSC's to review as part of the intake process. The TSC s
 - [ ] Copy this checklist to a project specific location for tracking
 - Acceptance Criteria
 	- Have an open and documented technical governance, including:
-		- [ ] A [LICENSE](../LICENSE) file in every code repository, with the license chosen an [OSI-approved license](https://opensource.org/licenses).
-		- [ ] A [README](../README.md) file welcoming new community members to the project and explaining why the project is useful and how to get started.
-		- [ ] A [CONTRIBUTING](../CONTRIBUTING.md) file explaining to other developers and your community of users how to contribute to the project. The file should explain what types of contributions are needed and how the process works.
+		- [X] A [LICENSE](../LICENSE) file in every code repository, with the license chosen an [OSI-approved license](https://opensource.org/licenses).
+		- [X] A [README](../README.md) file welcoming new community members to the project and explaining why the project is useful and how to get started.
+		- [X] A [CONTRIBUTING](../CONTRIBUTING.md) file explaining to other developers and your community of users how to contribute to the project. The file should explain what types of contributions are needed and how the process works.
 		- [ ] A CODEOWNERS or [COMMITTERS](../COMMITTERS.csv) file to define individuals or teams that are responsible for code in a repository; document current project owners and current and emeritus committers. 
 		- [ ] A [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md) file that sets the ground rules for participants’ behavior associated and helps to facilitate a friendly, welcoming environment. By default projects should leverage the Linux Foundation Code of Conduct unless an alternate Code of Conduct is approved prior.
 		- [ ] A [RELEASE](../RELEASE.md) file that provides documentation on the release methodology, cadence, criteria, etc.
