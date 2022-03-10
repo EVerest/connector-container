@@ -30,3 +30,7 @@ Project committers will review the contribution in a timely manner, and advise o
 [Technical Charter]: tsc/CHARTER.md
 [copyright and license headers]: https://github.com/lf-energy/tac/blob/main/process/contribution_guidelines.md#license
 [Developer Certificate of Origin signoff]: https://github.com/lf-energy/tac/blob/main/process/contribution_guidelines.md#contribution-sign-off
+
+## Contributors
+* Morgan Murphy morgan.murphy@chargenetstations.com
+* Jeremy Huether jeremy.huether@chargenetstations.com
