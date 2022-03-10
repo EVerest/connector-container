@@ -1,1 +1,3 @@
-_Put in here your project's release mechanisms, processes, and timeline._
+TBD
+
+* Some sort of CI pipeline process invoked by committers
