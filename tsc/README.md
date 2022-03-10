@@ -6,7 +6,7 @@ This directory contains the meeting notes, process documentations, and other mat
 
 This is a checklist for TSC's to review as part of the intake process. The TSC should review this entire list during the kickoff meeting. For anything outstanding, create an [issue](../issues) to track and link to it in the list
 
-- [ ] Copy this checklist to a project specific location for tracking
+- [X] Copy this checklist to a project specific location for tracking
 - Acceptance Criteria
 	- Have an open and documented technical governance, including:
 		- [X] A [LICENSE](../LICENSE) file in every code repository, with the license chosen an [OSI-approved license](https://opensource.org/licenses).
