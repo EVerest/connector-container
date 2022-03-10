@@ -21,7 +21,7 @@ Each contribution must meet the [coding style] and include..
 * A [Developer Certificate of Origin signoff].
 * Submitted to the project as a pull request.
 
-OCPP Cloud Connector is licensed under the [LICENSE NAME](LICENSE.md) license. Contributions should abide by that standard license.
+OCPP Cloud Connector is licensed under the [CC-BY-4.0](LICENSE.md) license. Contributions should abide by that standard license.
 
 Project committers will review the contribution in a timely manner, and advise of any changes needed to merge the request.
 
