@@ -32,7 +32,7 @@ This is a checklist for TSC's to review as part of the intake process. The TSC s
 		- [ ] TSC meeting cadence set and added to project calendar (https://lists.lfenergy.org/calendar)
 	- [ ] Code scan completed and any recommendations remedyed ( details at https://wiki.lfenergy.org/display/HOME/The+Linux+Foundation+License+Scanning+and+Analysis+Support+Program+for+LF+projects ).
 	- Infrastructure
-		- [ ] Source Control (Github, GitLab, something else ) and LFE Staff is an administrator.	
+		- [ ] Source Control (Github, GitLab, something else ) and LFE Staff is an administrator, public repo.	
 			- [ ] Developer Certificate of Origin past commit signoff done and DCO Probot enabled.
 		- [ ] Issue/feature tracker (JIRA, GitHub issues) and LFE Staff is an administrator.
 		- Collaboration tools 
