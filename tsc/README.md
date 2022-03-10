@@ -18,14 +18,14 @@ This is a checklist for TSC's to review as part of the intake process. The TSC s
 		- [X] A [GOVERNANCE](../GOVERNANCE.md) file that documents the project’s technical governance.
 		- [X] A [SUPPORT](../SUPPORT.md) file to let users and developers know about ways to get help with your project.
 	- [ ] Complete and approve the [Technical Charter](CHARTER.md) and agree to transfer any relevant trademarks to The Linux Foundation or its affiliate, LF Projects, LLC, and to assist in filing for any relevant unregistered ones.
-	- [ ] Submit a completed [Project Contribution Proposal](https://wiki.lfenergy.org/display/HOME/New+Project+Proposals+Process) to the TAC for consideration
-	- [ ] Schedule to present at an upcoming TAC meeting ( provide date ).
-	- [ ] Submit presentation to the TAC ( provide link to presentation ).
-	- [ ] Receive the affirmative majority vote of the TAC ( provide date ).
-	- [ ] Receive the affirmative majority vote of the Governing Board ( provide date ).
+	- [x] Submit a completed [Project Contribution Proposal](https://wiki.lfenergy.org/display/HOME/New+Project+Proposals+Process) to the TAC for consideration
+	- [x] Schedule to present at an upcoming TAC meeting ( provide date ).
+	- [x] Submit presentation to the TAC ( provide link to presentation ).
+	- [x] Receive the affirmative majority vote of the TAC ( provide date ).
+	- [x] Receive the affirmative majority vote of the Governing Board ( provide date ).
 - New Project Intake
 	- Establish TSC
-		- [ ] Location for TSC documents and meeting notes ( recommendation is ```tsc``` directory in main repo, and then ```meetings``` under the ```tsc``` directory )
+		- [x] Location for TSC documents and meeting notes ( recommendation is ```tsc``` directory in main repo, and then ```meetings``` under the ```tsc``` directory )
 		- [ ] TSC members identified, added to [GOVERNANCE.md](../GOVERNANCE.md).
 		- [ ] First TSC meeting held ( [agenda](meetings/initial-meeting-agenda.md) )
 		- [ ] Elect TSC Chairperson
