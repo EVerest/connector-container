@@ -1,4 +1,4 @@
-# Contributing to PROJECT NAME
+# Contributing to OCPP Cloud Connector
 
 Thank you for your interest in contributing to the OCPP Cloud Connector project. This document explains our contribution process and procedures:
 
