@@ -11,7 +11,6 @@ import (
 	"log"
 )
 
-
 var upgrader = websocket.Upgrader{
 	Subprotocols: []string{"ocpp16"},
 }
@@ -20,14 +19,19 @@ func main() {
 	http.HandleFunc("/", connectionHandler)
 	http.HandleFunc("/health", health)
 }
+
 func health(writer http.ResponseWriter, request *http.Request) { /*noop*/ }
 
 func connectionHandler(writer http.ResponseWriter, request *http.Request) {
 	headers := make(http.Header)
-	c, err := upgrader.Upgrade(writer, request, headers)
-    if err != nil {
-        log.Printf("Upgrading error: %#v\n", err)
+	websocket, error := upgrader.Upgrade(writer, request, headers)
+    if error != nil {
+        log.Printf("Upgrading error: %#v\n", error)
         return
     }
-    defer c.Close()
+    defer websocket.Close()
+}
+
+func getConnected(chargeBoxId string) bool {
+	return false
 }

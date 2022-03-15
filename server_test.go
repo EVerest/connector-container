@@ -58,5 +58,21 @@ func TestServer(t *testing.T) {
 		defer webserver.Close()
 	})
 
+	t.Run("saves connection when connected", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(connectionHandler))
+    	defer server.Close()
 
+		url := "ws" + strings.TrimPrefix(server.URL, "http")
+		
+		webserver, _, err := websocket.DefaultDialer.Dial(url + "/charge-box-id", nil)
+		if err != nil { t.Fatalf("%v", err) }
+
+		got := getConnected("charge-box-id")
+		want := true
+
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+		defer webserver.Close()
+	})
 }
