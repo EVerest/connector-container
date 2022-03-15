@@ -5,11 +5,12 @@
 package main
 
 import (
-	"testing"
-	"net/http/httptest"
 	"net/http"
-	"github.com/gorilla/websocket"
+	"net/http/httptest"
 	"strings"
+	"testing"
+
+	"github.com/gorilla/websocket"
 )
 func TestServer(t *testing.T) {
 	t.Run("health check at GET /health returns 200", func(t *testing.T) {
@@ -64,15 +65,14 @@ func TestServer(t *testing.T) {
 
 		url := "ws" + strings.TrimPrefix(server.URL, "http")
 		
-		webserver, _, err := websocket.DefaultDialer.Dial(url + "/charge-box-id", nil)
+		client, _, err := websocket.DefaultDialer.Dial(url + "/charge-box-id", nil)
 		if err != nil { t.Fatalf("%v", err) }
 
-		got := getConnected("charge-box-id")
-		want := true
+		got := getConnection("charge-box-id")
 
-		if got != want {
-			t.Errorf("got %v, want %v", got, want)
+		if got == nil {
+			t.Errorf("got no connector")
 		}
-		defer webserver.Close()
+		defer client.Close()
 	})
 }
