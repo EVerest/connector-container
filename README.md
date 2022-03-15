@@ -11,7 +11,7 @@
 
 # PROJECT NAME
 
-_2-3 sentence description of the project_
+The OCPP Cloud Connector is a cloud based implementation of the Open Charge Point Protocol, the de-facto standard for electric vehicle supply equipment (EVSE). The connector will supply a web socket connection in accordance with the specification and transform OCPP protocol specific messaging into a generic set of messages and events, allowing a developer or company to easily integrate EVSE control into new or existing infrastructure.
 
 ## Install
 
@@ -25,14 +25,14 @@ _Provide build instructions here or point to an BUILD.md file_
 
 You can connect with the community in a variety of ways...
 
-- [LINK TO MAILING LIST](https://lists.lfenergy.org/g/xxxx-discussion)
-- [#PROJECT NAME channel on LF Energy Slack](https://slack.lfenergy.org)
+- Slack Channel
+- Something else
 
 ## Contributing
-Anyone can contribute to the PROJECT NAME project - learn more at [CONTRIBUTING.md](CONTRIBUTING.md)
+Anyone can contribute to the OCPP Cloud Connector project - learn more at [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Governance
-PROJECT NAME is a project hosted by the [LF Energy Foundation](https://lfenergy.org). This project's techincal charter is located in [CHARTER.md](tsc/CHARTER.md) and has established it's own processes for managing day-to-day processes in the project at [GOVERNANCE.md](GOVERNANCE.md).
+OCPP Cloud Connector is a project hosted by the [LF Energy Foundation](https://lfenergy.org). This project's techincal charter is located in [CHARTER.md](tsc/CHARTER.md) and has established it's own processes for managing day-to-day processes in the project at [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Reporting Issues
-To report a problem, you can open an [issue](https://github.com/lf-energy/PROJECT NAME/issues) in repository against a specific workflow. If the issue is senstive in nature or a security related issue, please do not report in the issue tracker but instead email PROJECT NAME-private@lists.lfenergy.org.
+To report a problem, you can open an [issue](https://github.com/ChargeNet-Stations/ocpp-cloud-connector/issues) in repository against a specific workflow.
