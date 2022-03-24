@@ -1,8 +1,5 @@
-module socketHandler
+module ocppcc
 
-go 1.17
+go 1.18
 
-require (
-	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/posener/wstest v1.2.0 // indirect
-)
+require github.com/gorilla/websocket v1.5.0 // indirect
