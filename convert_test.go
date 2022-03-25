@@ -33,7 +33,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates ocppcc.action from ocpp byte array", func (t *testing.T)  {
 		
-		got := fromOcppByteSlice(chargeBoxId, message)	
+		got := fromByteSlice(chargeBoxId, message)	
 		want := ocppcc {
 			action: "BootNotification",
 		}
@@ -45,7 +45,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates messageId from ocpp byte array", func (t *testing.T)  {
 
-		got := fromOcppByteSlice(chargeBoxId, message)	
+		got := fromByteSlice(chargeBoxId, message)	
 		want := ocppcc {
 			messageId: "a-message-id",
 		}
@@ -57,7 +57,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates unspecified payload from ocpp byte array", func (t *testing.T)  {
 
-		got := fromOcppByteSlice(chargeBoxId, message)	
+		got := fromByteSlice(chargeBoxId, message)	
 
 		if got.payload == nil {
 			t.Error("Payload has been lost")
@@ -66,7 +66,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates messageId from ocpp byte array", func (t *testing.T)  {
 
-		got := fromOcppByteSlice(chargeBoxId, message)	
+		got := fromByteSlice(chargeBoxId, message)	
 		want := ocppcc {
 			messageId: "a-message-id",
 		}
@@ -78,7 +78,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("creates and populates a timestamp", func (t *testing.T)  {
 
-		got := fromOcppByteSlice(chargeBoxId, message)	
+		got := fromByteSlice(chargeBoxId, message)	
 				
 		if got.timestamp <= 0 {
 			t.Errorf("no timestamp set")
@@ -87,7 +87,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("passes thru a chargeBoxId", func (t *testing.T)  {
 
-		got := fromOcppByteSlice(chargeBoxId, message)	
+		got := fromByteSlice(chargeBoxId, message)	
 				
 		if got.chargeBoxId == "" {
 			t.Errorf("no chargeBoxId set")

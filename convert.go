@@ -38,7 +38,7 @@ func toOcppByteSlice(o ocppcc) []byte {
     return res
 }
 
-func fromOcppByteSlice(chargeBoxId string, b []byte) ocppcc {
+func fromByteSlice(chargeBoxId string, b []byte) ocppcc {
     ocppcc := ocppcc{}
     var arr []interface{}
 
@@ -71,7 +71,7 @@ func evseReader(chargeBoxId string, conn *websocket.Conn) {
 		if err != nil {
 			break
 		}
-		ocppcc := fromOcppByteSlice(chargeBoxId, message)
+		ocppcc := fromByteSlice(chargeBoxId, message)
 		log.Printf("ocppcc: %v", ocppcc)	
 	}		
 }
