@@ -48,6 +48,9 @@
 	})
 
 	t.Run("saves connection when connected", func(t *testing.T) {
+		storage := make(localStore)
+		StartConnectionHandler(&storage)
+		
 		srv := httptest.NewServer(http.HandlerFunc(connectionHandler))
     	defer srv.Close()
 

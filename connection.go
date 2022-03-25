@@ -18,22 +18,27 @@ type connectionStore interface {
 	Delete(string) bool
 }
 
-var ls = make(localStore)
-
 const subProtocol string = "ocpp1.6"
 
+var cs connectionStore
+	
+func StartConnectionHandler(connectorStore connectionStore) {
+	cs = connectorStore
+}
+	
 func connectionHandler(writer http.ResponseWriter, request *http.Request) {
 	connection := upgrade(writer, request)
 	defer connection.Close()
 
 	chargeBoxId := getChargeBoxId(*request)
-	connectionStore.Put(ls, chargeBoxId, connection)
+	cs.Put(chargeBoxId, connection)
 
-	evseMessenger(chargeBoxId, connection)
+	// Maybe a channel here that's consumed by convert?
+	evseReader(chargeBoxId, connection)
 }
 
 func getConnection(chargeBoxId string) *websocket.Conn {
-	return ls.Get(chargeBoxId)
+	return cs.Get(chargeBoxId)
 }
 
 func getChargeBoxId(request http.Request) string {

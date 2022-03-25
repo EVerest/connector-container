@@ -7,15 +7,33 @@ package main
 
 import (
 	"testing"
+	"bytes"
 )
 
 func TestConvert(t *testing.T) {
 	chargeBoxId := "a-charge-box-id"
 	message := []byte(`[2,"a-message-id","BootNotification",{}]`)
 
-	t.Run("populates action from ocpp byte array", func (t *testing.T)  {
+	t.Run("converts ocppcc to a JSON encoded ocpp byte slice", func (t *testing.T)  {
+		ocppcc := ocppcc{}
+		ocppcc.messageId = "a-message-id"
+		ocppcc.action = "BootNotification"
+		ocppcc.messageTypeId = 2
+		ocppcc.payload = make(map[string]interface {})
+
+		got := toOcppByteSlice(ocppcc)
+		want := []byte(`[2,"a-message-id","BootNotification",{}]`)
+
+		res := bytes.Compare(got, want)
+
+		if res != 0 {
+			t.Errorf("got %s, want %s", got, want)
+		}
+	})
+
+	t.Run("populates ocppcc.action from ocpp byte array", func (t *testing.T)  {
 		
-		got := fromByteSlice(chargeBoxId, message)	
+		got := fromOcppByteSlice(chargeBoxId, message)	
 		want := ocppcc {
 			action: "BootNotification",
 		}
@@ -27,7 +45,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates messageId from ocpp byte array", func (t *testing.T)  {
 
-		got := fromByteSlice(chargeBoxId, message)	
+		got := fromOcppByteSlice(chargeBoxId, message)	
 		want := ocppcc {
 			messageId: "a-message-id",
 		}
@@ -39,7 +57,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates unspecified payload from ocpp byte array", func (t *testing.T)  {
 
-		got := fromByteSlice(chargeBoxId, message)	
+		got := fromOcppByteSlice(chargeBoxId, message)	
 
 		if got.payload == nil {
 			t.Error("Payload has been lost")
@@ -48,7 +66,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates messageId from ocpp byte array", func (t *testing.T)  {
 
-		got := fromByteSlice(chargeBoxId, message)	
+		got := fromOcppByteSlice(chargeBoxId, message)	
 		want := ocppcc {
 			messageId: "a-message-id",
 		}
@@ -60,7 +78,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("creates and populates a timestamp", func (t *testing.T)  {
 
-		got := fromByteSlice(chargeBoxId, message)	
+		got := fromOcppByteSlice(chargeBoxId, message)	
 				
 		if got.timestamp <= 0 {
 			t.Errorf("no timestamp set")
@@ -69,7 +87,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("passes thru a chargeBoxId", func (t *testing.T)  {
 
-		got := fromByteSlice(chargeBoxId, message)	
+		got := fromOcppByteSlice(chargeBoxId, message)	
 				
 		if got.chargeBoxId == "" {
 			t.Errorf("no chargeBoxId set")

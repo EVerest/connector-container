@@ -1,0 +1,210 @@
+// Copyright 2022 Charge Net Stations and Contributors.
+// SPDX-License-Identifier: CC-BY-4.0
+
+// t.Run("populates action from ocpp byte array", func (t *testing.T)  {
+
+	// 	message := []byte(`[2,"3","BootNotification",{"chargePointVendor": "EV-BOX",
+	// 						"chargePointModel": "Test Model","firmwareVersion": "1.0"}]`)
+
+	// 	got := fromByteSlice(message)	
+	// 	want := Ocppcc {
+	// 		action: "BootNotification",
+	// 	}
+				
+	// 	if got.action != want.action {
+	// 		t.Errorf("got %v, want %v", got.action, want.action)
+	// 	}
+	// })
+
+	
+
+	// // OCPPCC to OCPP
+	// t.Run("maps Ocppcc.messageTypeId to Ocpp.messageTypeId", func (t *testing.T)  {
+	// 	ocppcc := Ocppcc{
+	// 		messageTypeId: "a-message-type-id",
+	// 	}
+
+	// 	got := ConvertToOcpp(&ocppcc)
+	// 	want := Ocpp{
+	// 		messageTypeId: "a-message-type-id",
+	// 	}
+
+	// 	if got.messageTypeId != want.messageTypeId {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocppcc.chargeBoxId to Ocpp.chargeBoxId", func (t *testing.T)  {
+	// 	ocppcc := Ocppcc{
+	// 		chargeBoxId: "a-charge-box-id",
+	// 	}
+
+	// 	got := ConvertToOcpp(&ocppcc)
+	// 	want := Ocpp{
+	// 		chargeBoxId: "a-charge-box-id",
+	// 	}
+
+	// 	if got.chargeBoxId != want.chargeBoxId {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocppcc.messageId to Ocpp.messsageId", func (t *testing.T)  {
+	// 	ocppcc := Ocppcc{
+	// 		messageId: "a-message-id",
+	// 	}
+
+	// 	got := ConvertToOcpp(&ocppcc)
+	// 	want := Ocpp{
+	// 		messageId: "a-message-id",
+	// 	}
+
+	// 	if got.messageId != want.messageId {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocppcc.action to Ocpp.action", func (t *testing.T)  {
+	// 	ocppcc := Ocppcc{
+	// 		action: "an-action",
+	// 	}
+
+	// 	got := ConvertToOcpp(&ocppcc)
+	// 	want := Ocpp{
+	// 		action: "an-action",
+	// 	}
+
+	// 	if got.action != want.action {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocppcc.payload to Ocpp.payload", func (t *testing.T)  {
+	// 	ocppcc := Ocppcc{
+	// 		payload: []byte("a-payload"),
+	// 	}
+
+	// 	got := ConvertToOcpp(&ocppcc)
+	// 	want := Ocpp{
+	// 		payload: []byte("a-payload"),
+	// 	}
+
+	// 	result := bytes.Compare(got.payload, want.payload) 
+
+	// 	if result != 0 {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocppcc.timestamp to Ocpp.timestamp", func (t *testing.T)  {
+	// 	ocppcc := Ocppcc{
+	// 		timestamp: 42,
+	// 	}
+
+	// 	got := ConvertToOcpp(&ocppcc)
+	// 	want := Ocpp{
+	// 		timestamp: 42,
+	// 	}
+
+	// 	if got.timestamp != want.timestamp {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+
+
+
+	// // OCPP to OCPPCC
+	// t.Run("maps Ocpp.messageTypeId to Ocppcc.messageTypeId", func (t *testing.T)  {
+	// 	ocpp := Ocpp{
+	// 		messageTypeId: "a-message-type-id",
+	// 	}
+
+	// 	got := ConvertToOcppcc(&ocpp)
+	// 	want := Ocppcc{
+	// 		messageTypeId: "a-message-type-id",
+	// 	}
+
+	// 	if got.messageTypeId != want.messageTypeId {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocpp.chargeBoxId to Ocppcc.chargeBoxId", func (t *testing.T)  {
+	// 	ocpp := Ocpp{
+	// 		chargeBoxId: "a-charge-box-id",
+	// 	}
+
+	// 	got := ConvertToOcppcc(&ocpp)
+	// 	want := Ocppcc{
+	// 		chargeBoxId: "a-charge-box-id",
+	// 	}
+
+	// 	if got.chargeBoxId != want.chargeBoxId {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocpp.messageId to Ocppcc.messsageId", func (t *testing.T)  {
+	// 	ocpp := Ocpp{
+	// 		messageId: "a-message-id",
+	// 	}
+
+	// 	got := ConvertToOcppcc(&ocpp)
+	// 	want := Ocppcc{
+	// 		messageId: "a-message-id",
+	// 	}
+
+	// 	if got.messageId != want.messageId {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocpp.action to Ocppcc.action", func (t *testing.T)  {
+	// 	ocpp := Ocpp{
+	// 		action: "an-action",
+	// 	}
+
+	// 	got := ConvertToOcppcc(&ocpp)
+	// 	want := Ocppcc{
+	// 		action: "an-action",
+	// 	}
+
+	// 	if got.action != want.action {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocpp.payload to Ocppcc.payload", func (t *testing.T)  {
+	// 	ocpp := Ocpp{
+	// 		payload: []byte("a-payload"),
+	// 	}
+
+	// 	got := ConvertToOcppcc(&ocpp)
+	// 	want := Ocppcc{
+	// 		payload: []byte("a-payload"),
+	// 	}
+
+	// 	result := bytes.Compare(got.payload, want.payload) 
+
+	// 	if result != 0 {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	// t.Run("maps Ocpp.timestamp to Ocppcc.timestamp", func (t *testing.T)  {
+	// 	ocpp := Ocpp{
+	// 		timestamp: 42,
+	// 	}
+
+	// 	got := ConvertToOcppcc(&ocpp)
+	// 	want := Ocppcc{
+	// 		timestamp: 42,
+	// 	}
+
+	// 	if got.timestamp != want.timestamp {
+	// 		t.Errorf("got %v, want %v", got, want)
+	// 	}
+	// })
+
+	

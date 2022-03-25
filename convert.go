@@ -8,24 +8,37 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"time"
-)
 
-type ocppReader struct {
-    src []byte
-    cur int
-}
+	"github.com/gorilla/websocket"
+)
 
 type ocppcc struct {
     timestamp       uint32    
-    messageTypeId   string
+    messageTypeId   uint16
     chargeBoxId     string
     messageId       string
     action          string
     payload         map[string]interface {}
 }
 
-func fromByteSlice(chargeBoxId string, b []byte) ocppcc {
+func toOcppByteSlice(o ocppcc) []byte {
+    var arr = make([]interface{}, 4)
+    arr[0] = o.messageTypeId
+    arr[1] = o.messageId
+    arr[2] = o.action
+    arr[3] = o.payload
+
+    res, err := json.Marshal(arr)
+    if err != nil {
+        fmt.Println(err)
+    }
+    return res
+}
+
+func fromOcppByteSlice(chargeBoxId string, b []byte) ocppcc {
     ocppcc := ocppcc{}
     var arr []interface{}
 
@@ -43,12 +56,53 @@ func fromByteSlice(chargeBoxId string, b []byte) ocppcc {
     return ocppcc
 }
 
-func (o *ocppReader) Read(p []byte) (n int, e error) {
-    fmt.Printf("Action: %v", o.src)
-    y, err := json.Marshal(o)
-    if err != nil {
-        fmt.Println(err)
+type Reader struct {
+    data []byte
+    readIndex int64
+}
+
+// Start function that creates a reader for evseReader to write to?
+
+// Called by io.Read impl?
+func evseReader(chargeBoxId string, conn *websocket.Conn) {
+    // Writes to Reader struct
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		ocppcc := fromOcppByteSlice(chargeBoxId, message)
+		log.Printf("ocppcc: %v", ocppcc)	
+	}		
+}
+
+func (r *Reader) Read(p []byte) (n int, err error) {
+    if r.readIndex >= int64(len(r.data)) {
+        err = io.EOF
+        return
     }
-    p = y
-	return	
+
+    n = copy(p, r.data[r.readIndex:])
+    r.readIndex += int64(n)
+    return
+}
+
+func (o *ocppcc) Write(data []byte) (n int, err error) {
+    // for 
+    // data contains JSON encoded ocppcc message
+    // ocppcc = decoded JSON []byte
+    // pull chargeBoxId, messageId from ocppcc
+    // convert ocppcc to array of interface byte array
+    // get connection from store
+    // send message 
+    // return len data, nil
+
+    // feels dirty
+    getConnection("charge-box-id from data []byte")
+    return 
+}
+
+// Called by io.Write impl?
+func evseWriter(o ocppcc) {
+    
 }

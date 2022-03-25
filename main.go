@@ -6,5 +6,7 @@
 package main
 
 func main () {
-	serve()
+	storage := make(localStore)
+	StartConnectionHandler(&storage)
+	StartServer("0.0.0.0:8080")
 }
