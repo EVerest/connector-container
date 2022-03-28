@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 )
+
 func TestServer(t *testing.T) {
 	t.Run("health check at GET health returns 200", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/health", nil)
@@ -17,7 +18,7 @@ func TestServer(t *testing.T) {
 		health(response, request)
 
 		got := response.Result().StatusCode
-		want :=  200
+		want := 200
 
 		if got != want {
 			t.Errorf("got %d, want %d", got, want)

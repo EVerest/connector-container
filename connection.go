@@ -21,11 +21,11 @@ type connectionStore interface {
 const subProtocol string = "ocpp1.6"
 
 var cs connectionStore
-	
+
 func StartConnectionHandler(connectorStore connectionStore) {
 	cs = connectorStore
 }
-	
+
 func connectionHandler(writer http.ResponseWriter, request *http.Request) {
 	connection := upgrade(writer, request)
 	defer connection.Close()
@@ -46,7 +46,7 @@ func getChargeBoxId(request http.Request) string {
 }
 
 func upgrade(writer http.ResponseWriter, request *http.Request) *websocket.Conn {
-	upgrader := websocket.Upgrader{ Subprotocols: []string{subProtocol} }
+	upgrader := websocket.Upgrader{Subprotocols: []string{subProtocol}}
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	conn, _ := upgrader.Upgrade(writer, request, nil)
 	// if error log debug?

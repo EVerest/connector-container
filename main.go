@@ -5,8 +5,11 @@
 
 package main
 
-func main () {
+func main() {
 	storage := make(localStore)
 	StartConnectionHandler(&storage)
 	StartServer("0.0.0.0:8080")
 }
+
+// Environmet exposer here only / config
+// Define and parse flags here
