@@ -7,7 +7,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"time"
@@ -17,41 +16,41 @@ import (
 
 type ocppcc struct {
 	timestamp     uint32
-	messageTypeId uint16
-	chargeBoxId   string
-	messageId     string
+	messageTypeID uint16
+	chargeBoxID   string
+	messageID     string
 	action        string
 	payload       map[string]interface{}
 }
 
-func toOcppByteSlice(o ocppcc) []byte {
+func toOCPPByteSlice(o ocppcc) []byte {
 	var arr = make([]interface{}, 4)
-	arr[0] = o.messageTypeId
-	arr[1] = o.messageId
+	arr[0] = o.messageTypeID
+	arr[1] = o.messageID
 	arr[2] = o.action
 	arr[3] = o.payload
 
 	res, err := json.Marshal(arr)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	return res
 }
 
-func fromByteSlice(chargeBoxId string, b []byte) ocppcc {
+func fromOCPPByteSlice(chargeBoxId string, b []byte) ocppcc {
 	ocppcc := ocppcc{}
 	var arr []interface{}
 
 	err := json.Unmarshal(b, &arr)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
-	ocppcc.action = arr[2].(string)
-	ocppcc.messageId = arr[1].(string)
-	ocppcc.timestamp = uint32(time.Now().UnixMilli())
-	ocppcc.payload = arr[3].(map[string]interface{})
-	ocppcc.chargeBoxId = chargeBoxId
+	ocppcc.action 		= arr[2].(string)
+	ocppcc.messageID 	= arr[1].(string)
+	ocppcc.timestamp 	= uint32(time.Now().UnixMilli())
+	ocppcc.payload 		= arr[3].(map[string]interface{})
+	ocppcc.chargeBoxID 	= chargeBoxId
 
 	return ocppcc
 }
@@ -71,7 +70,7 @@ func evseReader(chargeBoxId string, conn *websocket.Conn) {
 		if err != nil {
 			break
 		}
-		ocppcc := fromByteSlice(chargeBoxId, message)
+		ocppcc := fromOCPPByteSlice(chargeBoxId, message)
 		log.Printf("ocppcc: %v", ocppcc)
 	}
 }
@@ -98,7 +97,7 @@ func (o *ocppcc) Write(data []byte) (n int, err error) {
 	// return len data, nil
 
 	// feels dirty
-	getConnection("charge-box-id from data []byte")
+	GetConnection("charge-box-id from data []byte")
 	return
 }
 

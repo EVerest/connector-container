@@ -11,10 +11,17 @@ import (
 )
 
 // Todo: externalize health endpoint path as env var
-func StartServer(addr string) {
-	http.HandleFunc("/", connectionHandler)
-	http.HandleFunc("/health", health)
-	log.Fatal(http.ListenAndServe(addr, nil))
+type ServerOptions struct {
+	addr 			string
+	handler 		func(http.ResponseWriter, *http.Request)
+	rootPath 		string
+	healthCheckPath string
+}
+
+func StartServer(opts ServerOptions) {
+	http.HandleFunc(opts.rootPath, handler)
+	http.HandleFunc(opts.healthCheckPath, health)
+	log.Fatal(http.ListenAndServe(opts.addr, nil))
 }
 
 func health(writer http.ResponseWriter, request *http.Request) { /*noop*/ }

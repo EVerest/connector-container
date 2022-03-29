@@ -7,8 +7,20 @@ package main
 
 func main() {
 	storage := make(localStore)
-	StartConnectionHandler(&storage)
-	StartServer("0.0.0.0:8080")
+	connectionOptions := ConnectionOptions {
+		subProtocol		: "ocpp1.6",
+		connectionStore	: storage,
+	}
+	connectionHandler := NewConnectionHandler(connectionOptions)
+
+	serverOptions := ServerOptions {
+		addr			: "0.0.0.0:8080",
+		handler			: connectionHandler,
+		rootPath		: "/",
+		healthCheckPath	: "/health",
+	}
+
+	StartServer(serverOptions)
 }
 
 // Environmet exposer here only / config

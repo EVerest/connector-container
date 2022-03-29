@@ -6,6 +6,8 @@
 package main
 
 import (
+	"bytes"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -14,10 +16,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func TestWebsocket(t *testing.T) {
+func TestConnection(t *testing.T) {
 
 	t.Run("accepts an upgraded connection to GET", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(connectionHandler))
+		server := httptest.NewServer(http.HandlerFunc(handler))
 		defer server.Close()
 
 		url := "ws" + strings.TrimPrefix(server.URL, "http")
@@ -30,7 +32,12 @@ func TestWebsocket(t *testing.T) {
 	})
 
 	t.Run("only accepts connections to the ocpp1.6 sub protocol", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(connectionHandler))
+		options := ConnectionOptions {
+			subProtocol: "ocpp1.6",
+		}
+		NewConnectionHandler(options)
+		
+		server := httptest.NewServer(http.HandlerFunc(handler))
 		defer server.Close()
 
 		url := "ws" + strings.TrimPrefix(server.URL, "http")
@@ -52,9 +59,13 @@ func TestWebsocket(t *testing.T) {
 
 	t.Run("saves connection when connected", func(t *testing.T) {
 		storage := make(localStore)
-		StartConnectionHandler(&storage)
+		options := ConnectionOptions {
+			subProtocol: "ocpp1.6",
+			connectionStore: storage,
+		}
+		NewConnectionHandler(options)
 
-		srv := httptest.NewServer(http.HandlerFunc(connectionHandler))
+		srv := httptest.NewServer(http.HandlerFunc(handler))
 		defer srv.Close()
 
 		url := "ws" + strings.TrimPrefix(srv.URL, "http")
@@ -64,11 +75,54 @@ func TestWebsocket(t *testing.T) {
 			t.Fatalf("%v", err)
 		}
 
-		got := getConnection("charge-box-id")
+		got := GetConnection("charge-box-id")
 
 		if got == nil {
 			t.Errorf("got no connector")
 		}
+		defer client.Close()
+	})
+
+	t.Run("get connection and write message", func(t *testing.T) {
+		storage := make(localStore)
+		options := ConnectionOptions {
+			subProtocol: "ocpp1.6",
+			connectionStore: storage,
+		}
+		NewConnectionHandler(options)
+
+		srv := httptest.NewServer(http.HandlerFunc(handler))
+		defer srv.Close()
+
+		url := "ws" + strings.TrimPrefix(srv.URL, "http")
+
+		client, _, err := websocket.DefaultDialer.Dial(url+"/charge-box-id", nil)
+		if err != nil {
+			t.Fatalf("%v", err)
+		}
+
+		conn := GetConnection("charge-box-id")
+
+		if conn == nil {
+			t.Errorf("no connection")
+		}
+
+		message := []byte(`[2,"a-message-id","BootNotification",{"nerf":"dorf"}]`)
+		conn.WriteMessage(1, message)
+
+		for {
+			_, res, err := client.ReadMessage()
+			if err != nil {
+				break
+			}
+			log.Printf("res: %v", fromOCPPByteSlice("cbid", res))
+			answer := bytes.Compare(res, message)
+			if answer != 0 {
+				t.Errorf("Error, slice contents should match")
+			}
+			break
+		}
+
 		defer client.Close()
 	})
 }

@@ -16,12 +16,12 @@ func TestConvert(t *testing.T) {
 
 	t.Run("converts ocppcc to a JSON encoded ocpp byte slice", func(t *testing.T) {
 		ocppcc := ocppcc{}
-		ocppcc.messageId = "a-message-id"
+		ocppcc.messageID = "a-message-id"
 		ocppcc.action = "BootNotification"
-		ocppcc.messageTypeId = 2
+		ocppcc.messageTypeID = 2
 		ocppcc.payload = make(map[string]interface{})
 
-		got := toOcppByteSlice(ocppcc)
+		got := toOCPPByteSlice(ocppcc)
 		want := []byte(`[2,"a-message-id","BootNotification",{}]`)
 
 		res := bytes.Compare(got, want)
@@ -33,7 +33,7 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates ocppcc.action from ocpp byte array", func(t *testing.T) {
 
-		got := fromByteSlice(chargeBoxId, message)
+		got := fromOCPPByteSlice(chargeBoxId, message)
 		want := ocppcc{
 			action: "BootNotification",
 		}
@@ -45,19 +45,19 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates messageId from ocpp byte array", func(t *testing.T) {
 
-		got := fromByteSlice(chargeBoxId, message)
+		got := fromOCPPByteSlice(chargeBoxId, message)
 		want := ocppcc{
-			messageId: "a-message-id",
+			messageID: "a-message-id",
 		}
 
-		if got.messageId != want.messageId {
-			t.Errorf("got %v, want %v", got.messageId, want.messageId)
+		if got.messageID != want.messageID {
+			t.Errorf("got %v, want %v", got.messageID, want.messageID)
 		}
 	})
 
 	t.Run("populates unspecified payload from ocpp byte array", func(t *testing.T) {
 
-		got := fromByteSlice(chargeBoxId, message)
+		got := fromOCPPByteSlice(chargeBoxId, message)
 
 		if got.payload == nil {
 			t.Error("Payload has been lost")
@@ -66,19 +66,19 @@ func TestConvert(t *testing.T) {
 
 	t.Run("populates messageId from ocpp byte array", func(t *testing.T) {
 
-		got := fromByteSlice(chargeBoxId, message)
+		got := fromOCPPByteSlice(chargeBoxId, message)
 		want := ocppcc{
-			messageId: "a-message-id",
+			messageID: "a-message-id",
 		}
 
-		if got.messageId != want.messageId {
-			t.Errorf("got %v, want %v", got.messageId, want.messageId)
+		if got.messageID != want.messageID {
+			t.Errorf("got %v, want %v", got.messageID, want.messageID)
 		}
 	})
 
 	t.Run("creates and populates a timestamp", func(t *testing.T) {
 
-		got := fromByteSlice(chargeBoxId, message)
+		got := fromOCPPByteSlice(chargeBoxId, message)
 
 		if got.timestamp <= 0 {
 			t.Errorf("no timestamp set")
@@ -87,9 +87,9 @@ func TestConvert(t *testing.T) {
 
 	t.Run("passes thru a chargeBoxId", func(t *testing.T) {
 
-		got := fromByteSlice(chargeBoxId, message)
+		got := fromOCPPByteSlice(chargeBoxId, message)
 
-		if got.chargeBoxId == "" {
+		if got.chargeBoxID == "" {
 			t.Errorf("no chargeBoxId set")
 		}
 	})
