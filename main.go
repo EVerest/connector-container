@@ -1,27 +1,29 @@
-/**
- * Copyright 2022 Charge Net Stations and Contributors.
- * SPDX-License-Identifier: CC-BY-4.0
- */
+// /**
+//  * Copyright 2022 Charge Net Stations and Contributors.
+//  * SPDX-License-Identifier: CC-BY-4.0
+//  */
 
-package main
+// package main
 
-func main() {
-	storage := make(localStore)
-	connectionOptions := ConnectionOptions {
-		subProtocol		: "ocpp1.6",
-		connectionStore	: storage,
-	}
-	connectionHandler := NewConnectionHandler(connectionOptions)
+// func main() {
+	// only approrpiate for single instance deployments like local or development.  Not thread safe.
+// 	storage := make(localStore)
+// 	connectionOptions := ConnectionOptions {
+// 		subProtocol		: "ocpp1.6",
+// 		connectionStore	: storage,
+// 	}
+// 	connectionHandler := NewConnectionHandler(connectionOptions)
 
-	serverOptions := ServerOptions {
-		addr			: "0.0.0.0:8080",
-		handler			: connectionHandler,
-		rootPath		: "/",
-		healthCheckPath	: "/health",
-	}
+// 	serverOptions := ServerOptions {
+// 		addr			: "0.0.0.0:8080",
+// 		handler			: connectionHandler,
+// 		rootPath		: "/",
+// 		healthCheckPath	: "/health",
+// 		doer			: 
+// 	}
 
-	StartServer(serverOptions)
-}
+// 	StartServer(serverOptions)
+// }
 
-// Environmet exposer here only / config
-// Define and parse flags here
+// // Environmet exposer here only / config
+// // Define and parse flags here

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: CC-BY-4.0
  */
 
-package main
+package connection
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -18,38 +19,68 @@ type connectionStore interface {
 	Delete(string) bool
 }
 
+type doer interface {
+	FromConnection(URIpath string, b []byte) interface{}
+	ToConnection(o interface{}) []byte
+}
+
 var cs connectionStore
 var subProtocol string
+var do doer
+const forwardSlash = "/"
 
 type ConnectionOptions struct {
-	subProtocol 	string
-	connectionStore connectionStore
+	subProtocol 		string
+	connectionStore 	connectionStore
+	doer				doer 
 }
 
 func NewConnectionHandler(connectionOptions ConnectionOptions) func(http.ResponseWriter, *http.Request) {
 	cs = connectionOptions.connectionStore
 	subProtocol = connectionOptions.subProtocol
+	do = connectionOptions.doer
 
 	return handler
 }
 
 func handler(writer http.ResponseWriter, request *http.Request) {
-	connection := upgrade(writer, request)
-	defer connection.Close()
+	conn := upgrade(writer, request)
+	defer conn.Close()
 
-	chargeBoxId := getChargeBoxID(*request)
-	cs.Put(chargeBoxId, connection)
+	URIpath := getURIpath(*request)
+	cs.Put(URIpath, conn)
 
-	// Maybe a channel here that's consumed by convert?
-	evseReader(chargeBoxId, connection)
+	go connectionReader(URIpath, conn)
+	go connectionWriter()
 }
 
-func GetConnection(chargeBoxId string) *websocket.Conn {
+func connectionWriter() {
+	log.Println("Write")
+	// cs.Get("cbid")
+	// Call writer
+	// Get connection by URIpath
+	// Send payload
+	// for {
+	// 	conn.WriteMessage(1, do.ToConnection())
+	// }
+}
+
+func connectionReader(URIpath string, conn *websocket.Conn) {
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			break
+		}
+		do.FromConnection(URIpath, message)
+	}
+}
+
+func getConnection(chargeBoxId string) *websocket.Conn {
 	return cs.Get(chargeBoxId)
 }
 
-func getChargeBoxID(request http.Request) string {
-	return strings.TrimPrefix(request.RequestURI, "/")
+func getURIpath(request http.Request) string {
+	return strings.TrimPrefix(request.RequestURI, forwardSlash)
 }
 
 func upgrade(writer http.ResponseWriter, request *http.Request) *websocket.Conn {

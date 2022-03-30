@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: CC-BY-4.0
  */
 
-package main
+package convert
 
 import (
 	"encoding/json"
@@ -23,7 +23,7 @@ type ocppcc struct {
 	payload       map[string]interface{}
 }
 
-func toOCPPByteSlice(o ocppcc) []byte {
+func ToConnection(o ocppcc) []byte {
 	var arr = make([]interface{}, 4)
 	arr[0] = o.messageTypeID
 	arr[1] = o.messageID
@@ -37,7 +37,7 @@ func toOCPPByteSlice(o ocppcc) []byte {
 	return res
 }
 
-func fromOCPPByteSlice(chargeBoxId string, b []byte) ocppcc {
+func FromConnection(chargeBoxId string, b []byte) ocppcc {
 	ocppcc := ocppcc{}
 	var arr []interface{}
 
@@ -65,14 +65,14 @@ type Reader struct {
 // Called by io.Read impl?
 func evseReader(chargeBoxId string, conn *websocket.Conn) {
 	// Writes to Reader struct
-	for {
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			break
-		}
-		ocppcc := fromOCPPByteSlice(chargeBoxId, message)
-		log.Printf("ocppcc: %v", ocppcc)
-	}
+	// for {
+	// 	_, message, err := conn.ReadMessage()
+	// 	if err != nil {
+	// 		break
+	// 	}
+	// 	ocppcc := fromOCPPByteSlice(chargeBoxId, message)
+	// 	log.Printf("ocppcc: %v", ocppcc)
+	// }
 }
 
 func (r *Reader) Read(p []byte) (n int, err error) {
@@ -97,7 +97,6 @@ func (o *ocppcc) Write(data []byte) (n int, err error) {
 	// return len data, nil
 
 	// feels dirty
-	GetConnection("charge-box-id from data []byte")
 	return
 }
 

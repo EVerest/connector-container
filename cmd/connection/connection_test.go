@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: CC-BY-4.0
  */
 
-package main
+package connection
 
 import (
-	"bytes"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -32,8 +30,10 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("only accepts connections to the ocpp1.6 sub protocol", func(t *testing.T) {
+		storage := make(localStore)
 		options := ConnectionOptions {
 			subProtocol: "ocpp1.6",
+			connectionStore: storage,
 		}
 		NewConnectionHandler(options)
 		
@@ -75,7 +75,7 @@ func TestConnection(t *testing.T) {
 			t.Fatalf("%v", err)
 		}
 
-		got := GetConnection("charge-box-id")
+		got := getConnection("charge-box-id")
 
 		if got == nil {
 			t.Errorf("got no connector")
@@ -83,46 +83,48 @@ func TestConnection(t *testing.T) {
 		defer client.Close()
 	})
 
-	t.Run("get connection and write message", func(t *testing.T) {
-		storage := make(localStore)
-		options := ConnectionOptions {
-			subProtocol: "ocpp1.6",
-			connectionStore: storage,
-		}
-		NewConnectionHandler(options)
+	// Create mocked doer with easy message input for connectionWriter
 
-		srv := httptest.NewServer(http.HandlerFunc(handler))
-		defer srv.Close()
+	// t.Run("get connection and write message", func(t *testing.T) {
+	// 	storage := make(localStore)
+	// 	options := ConnectionOptions {
+	// 		subProtocol: "ocpp1.6",
+	// 		connectionStore: storage,
+	// 	}
+	// 	NewConnectionHandler(options)
 
-		url := "ws" + strings.TrimPrefix(srv.URL, "http")
+	// 	srv := httptest.NewServer(http.HandlerFunc(handler))
+	// 	defer srv.Close()
 
-		client, _, err := websocket.DefaultDialer.Dial(url+"/charge-box-id", nil)
-		if err != nil {
-			t.Fatalf("%v", err)
-		}
+	// 	url := "ws" + strings.TrimPrefix(srv.URL, "http")
 
-		conn := GetConnection("charge-box-id")
+	// 	client, _, err := websocket.DefaultDialer.Dial(url+"/a-charge-box-id", nil)
+	// 	if err != nil {
+	// 		t.Fatalf("%v", err)
+	// 	}
 
-		if conn == nil {
-			t.Errorf("no connection")
-		}
+	// 	conn := getConnection("a-charge-box-id")
 
-		message := []byte(`[2,"a-message-id","BootNotification",{"nerf":"dorf"}]`)
-		conn.WriteMessage(1, message)
+	// 	if conn == nil {
+	// 		t.Errorf("no connection")
+	// 	}
 
-		for {
-			_, res, err := client.ReadMessage()
-			if err != nil {
-				break
-			}
-			log.Printf("res: %v", fromOCPPByteSlice("cbid", res))
-			answer := bytes.Compare(res, message)
-			if answer != 0 {
-				t.Errorf("Error, slice contents should match")
-			}
-			break
-		}
+	// 	message := []byte(`[2,"a-message-id","BootNotification",{"nerf":"dorf"}]`)
+	// 	conn.WriteMessage(1, message)
 
-		defer client.Close()
-	})
+	// 	for {
+	// 		_, res, err := client.ReadMessage()
+	// 		if err != nil {
+	// 			break
+	// 		}
+	// 		log.Printf("res: %v", fromConnection("cbid", res))
+	// 		answer := bytes.Compare(res, message)
+	// 		if answer != 0 {
+	// 			t.Errorf("Error, slice contents should match")
+	// 		}
+	// 		break
+	// 	}
+
+	// 	defer client.Close()
+	// })
 }

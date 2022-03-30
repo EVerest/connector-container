@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: CC-BY-4.0
  */
 
-package main
+package server
 
 import (
 	"log"
 	"net/http"
 )
 
-// Todo: externalize health endpoint path as env var
 type ServerOptions struct {
 	addr 			string
 	handler 		func(http.ResponseWriter, *http.Request)
@@ -19,7 +18,7 @@ type ServerOptions struct {
 }
 
 func StartServer(opts ServerOptions) {
-	http.HandleFunc(opts.rootPath, handler)
+	http.HandleFunc(opts.rootPath, opts.handler)
 	http.HandleFunc(opts.healthCheckPath, health)
 	log.Fatal(http.ListenAndServe(opts.addr, nil))
 }
