@@ -14,7 +14,7 @@ import (
 
 type OCPPCC struct {
 	Timestamp     uint32 					`json:"timestamp"`
-	MessageTypeID uint16 					`json:"messageTypeId"`
+	MessageTypeID float64 					`json:"messageTypeId"`
 	ChargeBoxID   string 					`json:"chargeBoxId"`
 	MessageID     string 					`json:"messageId"`
 	Action        string 					`json:"action"`
@@ -35,6 +35,7 @@ func (r *EVSEreader) ConnectionReader(chargeBoxID string, b []byte) {
 	ocppcc.Timestamp 	= uint32(time.Now().UnixMilli())
 	ocppcc.Payload 		= arr[3].(map[string]interface{})
 	ocppcc.ChargeBoxID 	= chargeBoxID
+	ocppcc.MessageTypeID= arr[0].(float64)
 
 	bytes, err := json.Marshal(ocppcc)
 	if err != nil {

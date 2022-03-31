@@ -92,7 +92,7 @@ func TestConvert(t *testing.T) {
 		}
 	})
 
-	t.Run("populates ocppcc.action from ocpp byte array", func(t *testing.T) {
+	t.Run("populates messageID from ocpp byte array", func(t *testing.T) {
 		
 		reader := NewEVSEreader()
 		reader.ConnectionReader(chargeBoxId, message)
@@ -113,76 +113,100 @@ func TestConvert(t *testing.T) {
 		}
 
 		want := OCPPCC{
-			Action: "BootNotification",
+			MessageID: "a-message-id",
 		}	
 		
-		if want.Action != got.Action {
-			t.Errorf("\ngot %v, \nwant %v", got, want)
+		if want.MessageID != got.MessageID {
+			t.Errorf("\ngot %v, \nwant %v", got.MessageID, want.MessageID)
 		}
 	})
 
-	// t.Run("populates ocppcc.action from ocpp byte array", func(t *testing.T) {
+	t.Run("populates messageTypeID from ocpp byte array", func(t *testing.T) {
+		
+		reader := NewEVSEreader()
+		reader.ConnectionReader(chargeBoxId, message)
+		
+		p := make([]byte, 4)
+		collect := []byte{}
+		for {
+			n, err := reader.Read(p)
+			if err == io.EOF {
+				break
+			}
+			collect = append(collect, p[:n]...)
+		}
+		got := OCPPCC{}
+		err := json.Unmarshal(collect, &got)
+		if err != nil {
+			log.Println(err)
+		}
 
-	// 	got := FromConnection(chargeBoxId, message)
-	// 	want := OCPPCC{
-	// 		action: "BootNotification",
-	// 	}
+		want := OCPPCC{
+			MessageTypeID: 2,
+		}	
+		
+		if want.MessageTypeID != got.MessageTypeID {
+			t.Errorf("\ngot %v, \nwant %v", got.MessageTypeID, want.MessageTypeID)
+		}
+	})
 
-	// 	if got.action != want.action {
-	// 		t.Errorf("got %v, want %v", got.action, want.action)
-	// 	}
-	// })
+	t.Run("populates timestamp from ocpp byte array", func(t *testing.T) {
+		
+		reader := NewEVSEreader()
+		reader.ConnectionReader(chargeBoxId, message)
+		
+		p := make([]byte, 4)
+		collect := []byte{}
+		for {
+			n, err := reader.Read(p)
+			if err == io.EOF {
+				break
+			}
+			collect = append(collect, p[:n]...)
+		}
+		got := OCPPCC{}
+		err := json.Unmarshal(collect, &got)
+		if err != nil {
+			log.Println(err)
+		}
 
-	// t.Run("populates messageId from ocpp byte array", func(t *testing.T) {
+		want := OCPPCC{
+			Timestamp: 0,
+		}	
+		
+		if want.Timestamp > got.Timestamp {
+			t.Errorf("\ngot %v, \nwant %v", got.Timestamp, want.Timestamp)
+		}
+	})
 
-	// 	got := FromConnection(chargeBoxId, message)
-	// 	want := OCPPCC{
-	// 		messageID: "a-message-id",
-	// 	}
+	t.Run("populates chargeBoxID from ocpp byte array", func(t *testing.T) {
+		
+		reader := NewEVSEreader()
+		reader.ConnectionReader(chargeBoxId, message)
+		
+		p := make([]byte, 4)
+		collect := []byte{}
+		for {
+			n, err := reader.Read(p)
+			if err == io.EOF {
+				break
+			}
+			collect = append(collect, p[:n]...)
+		}
+		got := OCPPCC{}
+		err := json.Unmarshal(collect, &got)
+		if err != nil {
+			log.Println(err)
+		}
 
-	// 	if got.messageID != want.messageID {
-	// 		t.Errorf("got %v, want %v", got.messageID, want.messageID)
-	// 	}
-	// })
-
-	// t.Run("populates unspecified payload from ocpp byte array", func(t *testing.T) {
-
-	// 	got := FromConnection(chargeBoxId, message)
-
-	// 	if got.payload == nil {
-	// 		t.Error("Payload has been lost")
-	// 	}
-	// })
-
-	// t.Run("populates messageId from ocpp byte array", func(t *testing.T) {
-
-	// 	got := FromConnection(chargeBoxId, message)
-	// 	want := OCPPCC{
-	// 		messageID: "a-message-id",
-	// 	}
-
-	// 	if got.messageID != want.messageID {
-	// 		t.Errorf("got %v, want %v", got.messageID, want.messageID)
-	// 	}
-	// })
-
-	// t.Run("creates and populates a timestamp", func(t *testing.T) {
-
-	// 	got := FromConnection(chargeBoxId, message)
-
-	// 	if got.timestamp <= 0 {
-	// 		t.Errorf("no timestamp set")
-	// 	}
-	// })
-
-	// t.Run("passes thru a chargeBoxId", func(t *testing.T) {
-
-	// 	got := FromConnection(chargeBoxId, message)
-
-	// 	if got.chargeBoxID == "" {
-	// 		t.Errorf("no chargeBoxId set")
-	// 	}
-	// })
+		want := OCPPCC{
+			ChargeBoxID: "a-charge-box-id",
+		}	
+		
+		if want.ChargeBoxID > got.ChargeBoxID {
+			t.Errorf("\ngot %v, \nwant %v", got.ChargeBoxID, want.ChargeBoxID)
+		}
+	})
 
 	//TODO: Test type assertion errors
 }
