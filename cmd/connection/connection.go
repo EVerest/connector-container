@@ -21,19 +21,19 @@ type connectionStore interface {
 
 type doer interface {
 	ConnectionReader(URIpath string, b []byte)
-	// ToConnection(o interface{}) []byte
+	// ConnectionWriter(o interface{}) []byte
 }
-
-var cs connectionStore
-var subProtocol string
-var do doer
-const forwardSlash = "/"
 
 type ConnectionOptions struct {
 	subProtocol 		string
 	connectionStore 	connectionStore
 	doer				doer 
 }
+
+var cs connectionStore
+var subProtocol string
+var do doer
+const forwardSlash = "/"
 
 func NewConnectionHandler(connectionOptions ConnectionOptions) func(http.ResponseWriter, *http.Request) {
 	cs = connectionOptions.connectionStore
@@ -57,13 +57,11 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 
 func connectionWriter() {
 	log.Println("Write")
+	// get message from write buffer
 	// cs.Get("cbid")
 	// Call writer
 	// Get connection by URIpath
 	// Send payload
-	// for {
-	// 	conn.WriteMessage(1, do.ToConnection())
-	// }
 }
 
 func connectionReader(URIpath string, conn *websocket.Conn) {
@@ -76,8 +74,8 @@ func connectionReader(URIpath string, conn *websocket.Conn) {
 	}
 }
 
-func getConnection(chargeBoxId string) *websocket.Conn {
-	return cs.Get(chargeBoxId)
+func getConnection(URIpath string) *websocket.Conn {
+	return cs.Get(URIpath)
 }
 
 func getURIpath(request http.Request) string {

@@ -12,10 +12,47 @@ import (
 	"log"
 	"testing"
 )
-
+/**
+Refactor to use table driven tests
+**/
 func TestConvert(t *testing.T) {
 	chargeBoxId := "a-charge-box-id"
 	message := []byte(`[2,"a-message-id","BootNotification",{}]`)
+	ocppccMessage := []byte(`{"timestamp":3712349825,"messageTypeID":0,"chargeBoxID":"a-charge-box-id","messageID":"a-message-id","action":"BootNotification","payload":{}}`)
+
+	t.Run("Writes", func(t *testing.T) {
+
+		writer := NewEVSEWriter()
+		// p := make([]byte, 4)
+		n, err := writer.Write(ocppccMessage)
+		if err != nil {
+			t.Fatalf("Error")
+		}
+
+		log.Printf("Num: %d", n)
+		
+		// reader := NewEVSEreader()
+		// reader.ConnectionReader(chargeBoxId, message)
+		
+		// p := make([]byte, 4)
+		// collect := []byte{}
+		// for {
+		// 	n, err := reader.Read(p)
+		// 	if err == io.EOF {
+		// 		break
+		// 	}
+		// 	collect = append(collect, p[:n]...)
+		// }
+
+		// want := []byte(`{"timestamp":3712349825,"messageTypeID":0,"chargeBoxID":"a-charge-box-id","messageID":"a-message-id","action":"BootNotification","payload":{}}`)
+		// got := collect
+
+		// res := bytes.Compare(want, got)
+
+		// if res != -1 {
+		// 	t.Errorf("\ngot %s, \nwant %s", got, want)
+		// }
+	})
 
 	t.Run("converts ocpp to a JSON encoded ocppcc byte slice with buffer size 255", func(t *testing.T) {
 		
@@ -32,7 +69,7 @@ func TestConvert(t *testing.T) {
 			collect = append(collect, p[:n]...)
 		}
 
-		want := []byte(`{"timestamp":3712349825,"MessageTypeID":0,"ChargeBoxID":"a-charge-box-id","MessageID":"a-message-id","Action":"BootNotification","Payload":{}}`)
+		want := []byte(`{"timestamp":3712349825,"messageTypeID":0,"chargeBoxID":"a-charge-box-id","messageID":"a-message-id","action":"BootNotification","payload":{}}`)
 		got := collect
 
 		res := bytes.Compare(want, got)

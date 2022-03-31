@@ -7,6 +7,7 @@ package convert
 
 import (
 	"encoding/json"
+	// "fmt"
 	"io"
 	"log"
 	"time"
@@ -45,7 +46,7 @@ func (r *EVSEreader) ConnectionReader(chargeBoxID string, b []byte) {
 	r.data = append(r.data, bytes...)
 }
 
-func NewEVSEreader() *EVSEreader{
+func NewEVSEreader() *EVSEreader {
 	r = &EVSEreader{
 		data: []byte{},
 		readIndex: 0,
@@ -72,7 +73,33 @@ func (r *EVSEreader) Read(p []byte) (n int, err error) {
 	return
 }
 
-func (o *OCPPCC) Write(data []byte) (n int, err error) {
+var w *EVSEwriter
+
+func NewEVSEWriter() *EVSEwriter {
+	w = &EVSEwriter{
+		data: []byte{},
+	}
+
+	return w
+}
+
+type EVSEwriter struct {
+	data []byte
+}
+
+func (w *EVSEwriter) Write(data []byte) (n int, err error) {
+	for _, b := range data {
+		w.data = append(w.data, b)
+	}
+	log.Printf("Write: %s", w.data)
+	w.data = data
+	return len(data), nil
+	// n = 0
+	// for _, b := range data {
+	// 	append(w.data, b)
+	// 	n++
+	// }
+	// return n, nil
 	// for
 	// data contains JSON encoded ocppcc message
 	// ocppcc = decoded JSON []byte
@@ -83,10 +110,15 @@ func (o *OCPPCC) Write(data []byte) (n int, err error) {
 	// return len data, nil
 
 	// feels dirty
-	return
 }
 
-// func ToConnection(o OCPPCC) []byte {
+func (w *EVSEwriter) Close() error {
+	w.Close()
+
+	return nil
+}
+
+// func ConnectionWriter(o OCPPCC) []byte {
 // 	var arr = make([]interface{}, 4)
 // 	arr[0] = o.messageTypeID
 // 	arr[1] = o.messageID
