@@ -20,6 +20,7 @@ type ServerOptions struct {
 func StartServer(opts ServerOptions) {
 	http.HandleFunc(opts.rootPath, opts.handler)
 	http.HandleFunc(opts.healthCheckPath, health)
+	
 	log.Fatal(http.ListenAndServe(opts.addr, nil))
 }
 

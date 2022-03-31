@@ -20,8 +20,8 @@ type connectionStore interface {
 }
 
 type doer interface {
-	FromConnection(URIpath string, b []byte) interface{}
-	ToConnection(o interface{}) []byte
+	ConnectionReader(URIpath string, b []byte)
+	// ToConnection(o interface{}) []byte
 }
 
 var cs connectionStore
@@ -50,6 +50,7 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 	URIpath := getURIpath(*request)
 	cs.Put(URIpath, conn)
 
+	// begging for memory leaks?
 	go connectionReader(URIpath, conn)
 	go connectionWriter()
 }
@@ -71,7 +72,7 @@ func connectionReader(URIpath string, conn *websocket.Conn) {
 		if err != nil {
 			break
 		}
-		do.FromConnection(URIpath, message)
+		do.ConnectionReader(URIpath, message)
 	}
 }
 
