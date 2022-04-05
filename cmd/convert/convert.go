@@ -7,22 +7,20 @@ package convert
 
 import (
 	"encoding/json"
-	// "fmt"
-	"io"
 	"log"
 	"time"
 )
 
 type OCPPCC struct {
 	Timestamp     uint32 					`json:"timestamp"`
-	MessageTypeID float64 					`json:"messageTypeId"`
+	MessageTypeID uint8					`json:"messageTypeId"`
 	ChargeBoxID   string 					`json:"chargeBoxId"`
 	MessageID     string 					`json:"messageId"`
 	Action        string 					`json:"action"`
 	Payload       map[string]interface{}	`json:"payload"`
 }
 
-func (r *EVSEreader) ConnectionReader(chargeBoxID string, b []byte) {
+func (eData *EVSEdata) ConnectionReader(URIpath string, b []byte) {	
 	ocppcc := OCPPCC{}
 	var arr []interface{}
 
@@ -35,99 +33,66 @@ func (r *EVSEreader) ConnectionReader(chargeBoxID string, b []byte) {
 	ocppcc.MessageID 	= arr[1].(string)
 	ocppcc.Timestamp 	= uint32(time.Now().UnixMilli())
 	ocppcc.Payload 		= arr[3].(map[string]interface{})
-	ocppcc.ChargeBoxID 	= chargeBoxID
-	ocppcc.MessageTypeID= arr[0].(float64)
+	ocppcc.ChargeBoxID 	= URIpath
+	ocppcc.MessageTypeID= uint8(arr[0].(float64))
+
+	eData.rDataCh <- ocppcc
+}
+
+type EVSEdata struct {
+	rDataCh chan OCPPCC
+	wData []byte
+	wDataCh chan byte
+}
+
+var eData EVSEdata
+
+func NewEVSEdata() *EVSEdata {
+	eData = EVSEdata{}
+	eData.rDataCh = make(chan OCPPCC, 100)
+	eData.wDataCh = make(chan byte)
+
+	eData.wData = []byte("")
+	
+	return &eData
+}
+
+func (eData *EVSEdata) Read(b []byte) (int, error) {
+	ocppcc :=  <-eData.rDataCh
 
 	bytes, err := json.Marshal(ocppcc)
 	if err != nil {
 		log.Println(err)
 	}
+
+	n := copy(b, bytes)
+    return n, nil
+}
+
+func (eData *EVSEdata) ConnectionWriter() (URIpath string, payload []byte) {
+	ocppcc := &OCPPCC{}
+	err := json.Unmarshal(eData.wData, ocppcc)
+	if err != nil {
+		log.Printf("Error: %s", err)
+	}
+	log.Printf("Some: %s", ocppcc.ChargeBoxID)
 	
-	r.data = append(r.data, bytes...)
+	// TESTING!!!!
+	return ocppcc.ChargeBoxID, eData.wData
 }
 
-func NewEVSEreader() *EVSEreader {
-	r = &EVSEreader{
-		data: []byte{},
-		readIndex: 0,
-	}
-	
-	return r
-}
-
-type EVSEreader struct {
-	data      	[]byte
-	readIndex 	int64
-}
-
-var r *EVSEreader
-
-func (r *EVSEreader) Read(p []byte) (n int, err error) {
-	if r.readIndex >= int64(len(r.data)) {
-		err = io.EOF
-		return
-	}
-	n = copy(p, r.data[r.readIndex:])
-	r.readIndex += int64(n)
-
-	return
-}
-
-var w *EVSEwriter
-
-func NewEVSEWriter() *EVSEwriter {
-	w = &EVSEwriter{
-		data: []byte{},
-	}
-
-	return w
-}
-
-type EVSEwriter struct {
-	data []byte
-}
-
-func (w *EVSEwriter) Write(data []byte) (n int, err error) {
+func (eData *EVSEdata) Write(data []byte) (n int, err error) {
 	for _, b := range data {
-		w.data = append(w.data, b)
+		eData.wData = append(eData.wData, b)
 	}
-	log.Printf("Write: %s", w.data)
-	w.data = data
+	log.Printf("Write: %s", eData.wData)
+	eData.wData = data
+	
 	return len(data), nil
-	// n = 0
-	// for _, b := range data {
-	// 	append(w.data, b)
-	// 	n++
-	// }
-	// return n, nil
-	// for
-	// data contains JSON encoded ocppcc message
-	// ocppcc = decoded JSON []byte
-	// pull chargeBoxId, messageId from ocppcc
-	// convert ocppcc to array of interface byte array
-	// get connection from store
-	// send message
-	// return len data, nil
-
-	// feels dirty
 }
 
-func (w *EVSEwriter) Close() error {
-	w.Close()
+func (eData *EVSEdata) Close() error {
+	eData.Close()
 
 	return nil
 }
-
-// func ConnectionWriter(o OCPPCC) []byte {
-// 	var arr = make([]interface{}, 4)
-// 	arr[0] = o.messageTypeID
-// 	arr[1] = o.messageID
-// 	arr[2] = o.action
-// 	arr[3] = o.payload
-
-// 	res, err := json.Marshal(arr)
-// 	if err != nil {
-// 		log.Println(err)
-// 	}
-// 	return res
-// }

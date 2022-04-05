@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: CC-BY-4.0
  */
 
-package connection
+package main
 
 import "github.com/gorilla/websocket"
 

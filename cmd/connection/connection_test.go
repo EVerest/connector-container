@@ -6,6 +6,7 @@
 package connection
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -16,7 +17,7 @@ import (
 
 func TestConnection(t *testing.T) {
 
-	t.Run("accepts an upgraded connection to GET", func(t *testing.T) {
+	t.Run ("accepts an upgraded connection to GET", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(handler))
 		defer server.Close()
 
@@ -29,11 +30,9 @@ func TestConnection(t *testing.T) {
 		defer ws.Close()
 	})
 
-	t.Run("only accepts connections to the ocpp1.6 sub protocol", func(t *testing.T) {
-		storage := make(localStore)
+	t.Run("enforces ocpp1.6 sub protocol", func(t *testing.T) {
 		options := ConnectionOptions {
-			subProtocol: "ocpp1.6",
-			connectionStore: storage,
+			SubProtocol: "ocpp1.6",
 		}
 		NewConnectionHandler(options)
 		
@@ -57,11 +56,39 @@ func TestConnection(t *testing.T) {
 		defer ws.Close()
 	})
 
-	t.Run("saves connection when connected", func(t *testing.T) {
-		storage := make(localStore)
+	t.Run("enforces any sub protocol", func(t *testing.T) {
 		options := ConnectionOptions {
-			subProtocol: "ocpp1.6",
-			connectionStore: storage,
+			SubProtocol: "any",
+		}
+		NewConnectionHandler(options)
+		
+		server := httptest.NewServer(http.HandlerFunc(handler))
+		defer server.Close()
+
+		url := "ws" + strings.TrimPrefix(server.URL, "http")
+		websocket.DefaultDialer.Subprotocols = append(websocket.DefaultDialer.Subprotocols, "any")
+
+		ws, _, err := websocket.DefaultDialer.Dial(url, nil)
+		if err != nil {
+			t.Fatalf("%v", err)
+		}
+
+		got := ws.Subprotocol()
+		want := "any"
+
+		if got != want {
+			t.Errorf("got %s, want %s", got, want)
+		}
+		defer ws.Close()
+	})
+
+	t.Run("saves connection when connected", func(t *testing.T) {
+		storage := &storeIt{}
+		doer := doIt{}
+		options := ConnectionOptions {
+			SubProtocol: "ocpp1.6",
+			ConnectionStore: storage,
+			Doer: &doer,
 		}
 		NewConnectionHandler(options)
 
@@ -71,60 +98,104 @@ func TestConnection(t *testing.T) {
 		url := "ws" + strings.TrimPrefix(srv.URL, "http")
 
 		client, _, err := websocket.DefaultDialer.Dial(url+"/charge-box-id", nil)
+		defer client.Close()
 		if err != nil {
 			t.Fatalf("%v", err)
 		}
 
-		got := getConnection("charge-box-id")
-
-		if got == nil {
-			t.Errorf("got no connector")
+		if !storage.put {
+			t.Fatal("Put not called")
 		}
-		defer client.Close()
 	})
 
-	// Create mocked doer with easy message input for connectionWriter
+	t.Run("a connection starts doer.ConnectionWriter", func(t *testing.T) {
+		storage := &storeIt{}
+		doer := doIt{}
+		options := ConnectionOptions {
+			SubProtocol: "ocpp1.6",
+			ConnectionStore: storage,
+			Doer: &doer,
+		}
+		NewConnectionHandler(options)
 
-	// t.Run("get connection and write message", func(t *testing.T) {
-	// 	storage := make(localStore)
-	// 	options := ConnectionOptions {
-	// 		subProtocol: "ocpp1.6",
-	// 		connectionStore: storage,
-	// 	}
-	// 	NewConnectionHandler(options)
+		srv := httptest.NewServer(http.HandlerFunc(handler))
+		defer srv.Close()
 
-	// 	srv := httptest.NewServer(http.HandlerFunc(handler))
-	// 	defer srv.Close()
+		url := "ws" + strings.TrimPrefix(srv.URL, "http")
 
-	// 	url := "ws" + strings.TrimPrefix(srv.URL, "http")
+		client, _, err := websocket.DefaultDialer.Dial(url+"/a-charge-box-id", nil)
+		defer client.Close()
+		if err != nil {
+			t.Fatalf("%v", err)
+		}
 
-	// 	client, _, err := websocket.DefaultDialer.Dial(url+"/a-charge-box-id", nil)
-	// 	if err != nil {
-	// 		t.Fatalf("%v", err)
-	// 	}
+		if doer.connectionWriter == false {
+			t.Errorf("ConnectionWriter not called")
+		}
+	})
 
-	// 	conn := getConnection("a-charge-box-id")
+	t.Run("a connection starts doer.ConnectionReader", func(t *testing.T) {
+		storage := &storeIt{}
+		doer := &doIt{}
+		options := ConnectionOptions {
+			SubProtocol: "ocpp1.6",
+			ConnectionStore: storage,
+			Doer: doer,
+		}
+		NewConnectionHandler(options)
 
-	// 	if conn == nil {
-	// 		t.Errorf("no connection")
-	// 	}
+		srv := httptest.NewServer(http.HandlerFunc(handler))
+		defer srv.Close()
 
-	// 	message := []byte(`[2,"a-message-id","BootNotification",{"nerf":"dorf"}]`)
-	// 	conn.WriteMessage(1, message)
+		url := "ws" + strings.TrimPrefix(srv.URL, "http")
 
-	// 	for {
-	// 		_, res, err := client.ReadMessage()
-	// 		if err != nil {
-	// 			break
-	// 		}
-	// 		log.Printf("res: %v", fromConnection("cbid", res))
-	// 		answer := bytes.Compare(res, message)
-	// 		if answer != 0 {
-	// 			t.Errorf("Error, slice contents should match")
-	// 		}
-	// 		break
-	// 	}
+		client, _, err := websocket.DefaultDialer.Dial(url+"/a-charge-box-id", nil)
+		
+		if err != nil {
+			t.Fatalf("%v", err)
+		}
 
-	// 	defer client.Close()
-	// })
+		client.WriteMessage(1, []byte(`a-payload`))
+
+		if doer.connectionReader == false {
+			t.Errorf("ConnectionReader not called")
+		}
+	})
+}
+
+type doIt struct {
+	connectionWriter bool
+	connectionReader bool
+}
+
+func (d *doIt) ConnectionReader(URIpath string, b []byte) {
+	log.Printf("ConnectionReader: %s", b)
+	d.connectionReader = true			
+}
+
+func (d *doIt) ConnectionWriter() (URIpath string, payload []byte){
+	// log.Println("ConnectionWriter")
+	d.connectionWriter = true
+	return "", nil
+}
+
+type storeIt struct {
+	put bool
+	get bool
+	delete bool
+}
+
+func (s *storeIt) Put(string, *websocket.Conn) bool {
+	s.put = true
+	return true
+}
+
+func (s *storeIt) Get(string) *websocket.Conn {
+	s.get = true
+	return nil
+}
+
+func (s *storeIt) Delete(string) bool {
+	s.delete = true
+	return true
 }

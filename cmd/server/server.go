@@ -11,17 +11,17 @@ import (
 )
 
 type ServerOptions struct {
-	addr 			string
-	handler 		func(http.ResponseWriter, *http.Request)
-	rootPath 		string
-	healthCheckPath string
+	Addr 			string
+	Handler 		func(http.ResponseWriter, *http.Request)
+	RootPath 		string
+	HealthCheckPath string
 }
 
 func StartServer(opts ServerOptions) {
-	http.HandleFunc(opts.rootPath, opts.handler)
-	http.HandleFunc(opts.healthCheckPath, health)
+	http.HandleFunc(opts.RootPath, opts.Handler)
+	http.HandleFunc(opts.HealthCheckPath, health)
 	
-	log.Fatal(http.ListenAndServe(opts.addr, nil))
+	log.Fatal(http.ListenAndServe(opts.Addr, nil))
 }
 
 func health(writer http.ResponseWriter, request *http.Request) { /*noop*/ }

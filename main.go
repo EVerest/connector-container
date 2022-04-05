@@ -5,29 +5,50 @@
 
 package main
 
-import(
-	
+import (
+	"io"
+	"log"
+	"sync"
+
+	"github.com/ChargeNet-Stations/ocpp-cloud-connector/cmd/connection"
+	"github.com/ChargeNet-Stations/ocpp-cloud-connector/cmd/convert"
+	"github.com/ChargeNet-Stations/ocpp-cloud-connector/cmd/server"
 )
 
 func main() {
-	// only approrpiate for single instance deployments like local or development.  Not thread safe.
-	// storage := make(localStore)
-	// connectionOptions := ConnectionOptions {
-	// 	subProtocol		: "ocpp1.6",
-	// 	connectionStore	: storage,
-	// }
-	// connectionHandler := NewConnectionHandler(connectionOptions)
-	// doer := NewEVSEreader()
-	// serverOptions := ServerOptions {
-	// 	addr			: "0.0.0.0:8080",
-	// 	handler			: connectionHandler,
-	// 	rootPath		: "/",
-	// 	healthCheckPath	: "/health",
-	// 	doer			: doer,
-	// }
+	storage := make(localStore)
+	thing := convert.NewEVSEdata()
+	connectionOptions := connection.ConnectionOptions {
+		SubProtocol		: "ocpp1.6",
+		ConnectionStore	: storage,
+		Doer: thing,
+	}
 
-	// StartServer(serverOptions)
+	connectionHandler := connection.NewConnectionHandler(connectionOptions)
+	
+	serverOptions := server.ServerOptions {
+		Addr			: "0.0.0.0:8080",
+		Handler			: connectionHandler,
+		RootPath		: "/",
+		HealthCheckPath	: "/health",
+ 	}
+	 
+	 var wg sync.WaitGroup
+	 wg.Add(1)
+	 
+	 go server.StartServer(serverOptions)
+	 go readThis(thing, &wg)
+	 
+	 wg.Wait()
 }
 
-// Environmet exposer here only / config
-// Define and parse flags here
+func readThis(t *convert.EVSEdata, wg *sync.WaitGroup) {
+	defer wg.Done()
+	buf := make([]byte, 1024)
+	for {
+		n, err := t.Read(buf)
+		if err != io.EOF {
+			log.Printf("Read:  %s", buf[:n])
+		}
+	}
+}
