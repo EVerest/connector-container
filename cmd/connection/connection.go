@@ -23,8 +23,8 @@ type connectionStore interface {
 type converter interface {
 	ConnectionReader(URIpath string, b []byte)
 	ConnectionWriter() (URIpath string, payload []byte)
-	Connect(URIpath string)
-	Disconnect(URIpath string)
+	ConnectEvent(URIpath string)
+	DisconnectEvent(URIpath string)
 }
 
 type ConnectionOptions struct {
@@ -57,7 +57,7 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	saveConnection(URIpath, conn)
-	do.Connect(URIpath)
+	do.ConnectEvent(URIpath)
 
 	var wg sync.WaitGroup
 
@@ -74,7 +74,7 @@ func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup) 
 	for {	
 		_, message, err := conn.ReadMessage()
 		if err != nil { 
-			do.Disconnect(URIpath)
+			do.DisconnectEvent(URIpath)
 			break
 		}
 		do.ConnectionReader(URIpath, message)
@@ -111,6 +111,6 @@ func upgrade(writer http.ResponseWriter, request *http.Request) *websocket.Conn 
 	upgrader := websocket.Upgrader{Subprotocols: []string{subProtocol}}
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	conn, _ := upgrader.Upgrade(writer, request, nil)
-	// if error log debug?
+
 	return conn
 }

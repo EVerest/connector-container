@@ -59,7 +59,7 @@ func TestConvert(t *testing.T) {
 		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
-	t.Run("sends error when message malformed", func(t *testing.T) {
+	t.Run("sends error to backend when message malformed", func(t *testing.T) {
 		badMessageMissingQuote := []byte(`[2,a-message-id","an-action",{"key":"value"}]`)
 
 		data := NewEVSEdata()
@@ -77,6 +77,11 @@ func TestConvert(t *testing.T) {
 		}
 		
 		log.Printf("Number: %d Buffer: %s", n, buf)
+	})
+
+	t.Run("sends error to evse when message malformed", func(t *testing.T) {
+		t.SkipNow()
+		t.Fatal("Not imp")	
 	})
 
 	t.Run("populates messageID from ocpp byte array", func(t *testing.T) {

@@ -44,38 +44,40 @@ func TestConnection(t *testing.T) {
 		
 	})
 
-	// I don't know yet
+	// I don't why this fails
+	t.Run("calls disconnect when disconnected", func(t *testing.T) {
 
-	// t.Run("calls disconnect when disconnected", func(t *testing.T) {
-	// 	storage := &storeIt{}
-	// 	doer := &doIt{}
-	// 	doer.connected = false
-	// 	options := ConnectionOptions {
-	// 		SubProtocol: "ocpp1.6",
-	// 		ConnectionStore: storage,
-	// 		Converter: doer,
-	// 	}
-	// 	NewConnectionHandler(options)
-
-	// 	srv := httptest.NewServer(http.HandlerFunc(handler))
-	// 	defer srv.Close()
-
-	// 	url := "ws" + strings.TrimPrefix(srv.URL, "http")
-
-	// 	client, _, err := websocket.DefaultDialer.Dial(url+"/charge-box-id", nil)
-	// 	if err != nil {
-	// 		t.Fatalf("%v", err)
-	// 	}
-	// 	err = client.Close()
-	// 	if err != nil {
-	// 		log.Printf("Error: %s", err)
-	// 	}
-
-	// 	if !doer.callDisconnect {
-	// 		t.Fatalf("no call to disconnect when disconnecting: %v", doer.rMessage)
-	// 	}
+		t.SkipNow()
 		
-	// })
+		storage := &storeIt{}
+		doer := &doIt{}
+		doer.connected = false
+		options := ConnectionOptions {
+			SubProtocol: "ocpp1.6",
+			ConnectionStore: storage,
+			Converter: doer,
+		}
+		NewConnectionHandler(options)
+
+		srv := httptest.NewServer(http.HandlerFunc(handler))
+		defer srv.Close()
+
+		url := "ws" + strings.TrimPrefix(srv.URL, "http")
+
+		client, _, err := websocket.DefaultDialer.Dial(url+"/charge-box-id", nil)
+		if err != nil {
+			t.Fatalf("%v", err)
+		}
+		err = client.Close()
+		if err != nil {
+			log.Printf("Error: %s", err)
+		}
+
+		if !doer.callDisconnect {
+			t.Fatalf("no call to disconnect when disconnecting: %v", doer.rMessage)
+		}
+		
+	})
 
 	t.Run ("accepts an upgraded connection to GET", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(handler))
@@ -187,11 +189,11 @@ func (d *doIt) ConnectionWriter() (URIpath string, payload []byte){
 	return "", nil
 }
 
-func (d *doIt) Connect(URIpath string) {
+func (d *doIt) ConnectEvent(URIpath string) {
 	d.connected = true
 }
 
-func (d *doIt) Disconnect(URIpath string) {
+func (d *doIt) DisconnectEvent(URIpath string) {
 	log.Println("DISCONNECT!")
 	d.callDisconnect = true
 }
