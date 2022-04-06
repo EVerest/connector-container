@@ -132,7 +132,7 @@ func TestConvert(t *testing.T) {
 		json.Unmarshal(sizedBuffer, got)
 		want := uint32(3712349825)
 
-		if got.Timestamp < want {
+		if got.Timestamp > want {
 			t.Errorf("\ngot %d, \nwant %d", got.Timestamp, want)
 		}
 	})

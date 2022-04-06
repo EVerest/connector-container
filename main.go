@@ -11,38 +11,38 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ChargeNet-Stations/ocpp-cloud-connector/cmd/connection"
-	"github.com/ChargeNet-Stations/ocpp-cloud-connector/cmd/convert"
-	"github.com/ChargeNet-Stations/ocpp-cloud-connector/cmd/server"
+	"github.com/ChargeNet-Stations/ocpp-cloud-connector/pkg/connection"
+	"github.com/ChargeNet-Stations/ocpp-cloud-connector/pkg/convert"
+	"github.com/ChargeNet-Stations/ocpp-cloud-connector/pkg/server"
 )
 
 func main() {
 	storage := make(localStore)
 	converter := convert.NewEVSEdata()
-	connectionOptions := connection.ConnectionOptions {
-		SubProtocol		: "ocpp1.6",
-		ConnectionStore	: storage,
-		Converter: converter,
+	connectionOptions := connection.ConnectionOptions{
+		SubProtocol:     "ocpp1.6",
+		ConnectionStore: storage,
+		Converter:       converter,
 	}
 
 	connectionHandler := connection.NewConnectionHandler(connectionOptions)
-	
-	serverOptions := server.ServerOptions {
-		Addr			: "0.0.0.0:8080",
-		Handler			: connectionHandler,
-		RootPath		: "/",
-		HealthCheckPath	: "/health",
- 	}
-	 
+
+	serverOptions := server.ServerOptions{
+		Addr:            "0.0.0.0:8080",
+		Handler:         connectionHandler,
+		RootPath:        "/",
+		HealthCheckPath: "/health",
+	}
+
 	var wg sync.WaitGroup
 	wg.Add(4)
-	 
+
 	go server.StartServer(serverOptions)
 
 	go readThis(converter, &wg)
 	go writeToCat(converter, &wg)
 	go writeToDog(converter, &wg)
-	 
+
 	wg.Wait()
 }
 
