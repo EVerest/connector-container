@@ -20,26 +20,28 @@ type connectionStore interface {
 	Delete(string) bool
 }
 
-type doer interface {
+type converter interface {
 	ConnectionReader(URIpath string, b []byte)
 	ConnectionWriter() (URIpath string, payload []byte)
+	Connect(URIpath string)
+	Disconnect(URIpath string)
 }
 
 type ConnectionOptions struct {
 	SubProtocol 		string
 	ConnectionStore 	connectionStore
-	Doer				doer 
+	Converter			converter 
 }
 
 var cs connectionStore
 var subProtocol string
-var do doer
+var do converter
 const forwardSlash = "/"
 
 func NewConnectionHandler(connectionOptions ConnectionOptions) func(http.ResponseWriter, *http.Request) {
 	cs = connectionOptions.ConnectionStore
 	subProtocol = connectionOptions.SubProtocol
-	do = connectionOptions.Doer
+	do = connectionOptions.Converter
 
 	return handler
 }
@@ -55,8 +57,10 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	saveConnection(URIpath, conn)
+	do.Connect(URIpath)
 
 	var wg sync.WaitGroup
+
 	wg.Add(2)
 
 	go connectionWriter(&wg)
@@ -70,7 +74,7 @@ func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup) 
 	for {	
 		_, message, err := conn.ReadMessage()
 		if err != nil { 
-			log.Printf("error: %s", err)
+			do.Disconnect(URIpath)
 			break
 		}
 		do.ConnectionReader(URIpath, message)
@@ -84,6 +88,7 @@ func connectionWriter(wg *sync.WaitGroup) {
 
 		conn := cs.Get(path)
 		if conn == nil {
+			log.Printf("no connection for path %s", path)
 			break
 		}
 		conn.WriteMessage(1, payload)
