@@ -9,7 +9,7 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/CII ID/badge)](https://bestpractices.coreinfrastructure.org/projects/CII ID)
 ```
 
-# PROJECT NAME
+# OCPP Cloud Connector
 
 The OCPP Cloud Connector is a cloud based implementation of the Open Charge Point Protocol, the de-facto standard for electric vehicle supply equipment (EVSE). The connector will supply a web socket connection in accordance with the specification and transform OCPP protocol specific messaging into a generic set of messages and events, allowing a developer or company to easily integrate EVSE control into new or existing infrastructure.
 
