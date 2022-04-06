@@ -125,9 +125,9 @@ func TestConvert(t *testing.T) {
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)
-		want := uint32(3712349825)
+		want := int64(3712349825)
 
-		if got.Timestamp > want {
+		if got.Timestamp < want {
 			t.Errorf("\ngot %d, \nwant %d", got.Timestamp, want)
 		}
 	})
