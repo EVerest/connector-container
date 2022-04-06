@@ -39,9 +39,9 @@ var do converter
 const forwardSlash = "/"
 
 func NewConnectionHandler(connectionOptions ConnectionOptions) func(http.ResponseWriter, *http.Request) {
-	cs = connectionOptions.ConnectionStore
+	cs 			= connectionOptions.ConnectionStore
 	subProtocol = connectionOptions.SubProtocol
-	do = connectionOptions.Converter
+	do 			= connectionOptions.Converter
 
 	return handler
 }

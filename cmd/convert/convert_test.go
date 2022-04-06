@@ -17,7 +17,6 @@ Refactor to use table driven tests
 func TestConvert(t *testing.T) {
 	chargeBoxId := "a-charge-box-id"
 	message := []byte(`[2,"a-message-id","an-action",{"key":"value"}]`)
-	// ocppccMessage := []byte(`{"timestamp":3712349825,"messageTypeID":0,"chargeBoxID":"a-charge-box-id","messageID":"a-message-id","action":"BootNotification","payload":{}}`)
 
 	t.Run("sends error when wrong call type type", func(t *testing.T) {
 		badMessageWrongCallTypeType := []byte(`["2",a-message-id","an-action",{"key":"value"}]`)

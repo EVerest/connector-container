@@ -138,11 +138,11 @@ func (eData *EVSEdata) sendError(URIpath string, err error) {
 func (eData *EVSEdata) send(URIpath string, typeID string, action string, err error) {
 	ocppcc := OCPPCC{}
 
-	ocppcc.MessageTypeID = typeID
-	ocppcc.Action = action
-	ocppcc.ChargeBoxID = URIpath
-	ocppcc.MessageID = uuid.NewString()
-	ocppcc.Timestamp = uint32(time.Now().UnixMilli())
+	ocppcc.MessageTypeID 	= typeID
+	ocppcc.Action 			= action
+	ocppcc.ChargeBoxID 		= URIpath
+	ocppcc.MessageID 		= uuid.NewString()
+	ocppcc.Timestamp 		= uint32(time.Now().UnixMilli())
 
 	m := make(map[string]interface{})
 	if err != nil {
