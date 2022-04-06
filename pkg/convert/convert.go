@@ -25,16 +25,18 @@ type OCPPCC struct {
 }
 
 type EVSEdata struct {
-	rDataCh chan OCPPCC
-	wDataCh chan OCPPCC
+	read chan OCPPCC
+	write chan OCPPCC
 }
 
 var eData EVSEdata
+const call 		= "2"
+const callError = "4"
 
 func NewEVSEdata() *EVSEdata {
 	eData = EVSEdata{}
-	eData.rDataCh = make(chan OCPPCC, 100)
-	eData.wDataCh = make(chan OCPPCC, 100)
+	eData.read = make(chan OCPPCC, 100)
+	eData.write = make(chan OCPPCC, 100)
 	
 	return &eData
 }
@@ -45,12 +47,12 @@ func (eData *EVSEdata) ConnectionReader(URIpath string, b []byte) {
 
 	err := json.Unmarshal(b, &arr)
 	if err != nil {
-		eData.sendError(URIpath, err)
+		eData.sendErrorToServer(URIpath, err)
 		return
 	}
 
 	if len(arr) < 4 {
-		eData.sendError(URIpath, fmt.Errorf("length of OCPP array less than 4"))
+		eData.sendErrorToServer(URIpath, fmt.Errorf("length of OCPP array less than 4"))
 		return
 	}
 
@@ -63,14 +65,15 @@ func (eData *EVSEdata) ConnectionReader(URIpath string, b []byte) {
 	ocppcc.Payload 			= arr[3].(map[string]interface {})
 	ocppcc.ChargeBoxID 		= URIpath
 
-	eData.rDataCh <- ocppcc
+	eData.read <- ocppcc
 }
 
 func (eData *EVSEdata) Read(b []byte) (int, error) {
-	ocppcc := <-eData.rDataCh
+	ocppcc := <-eData.read
 	bytes, err := json.Marshal(ocppcc)
 	if err != nil {
-		log.Printf("Error!! %s", err)
+		eData.sendErrorToServer("unknown", err)
+		return 0, err
 	}
 
 	n := copy(b, bytes)
@@ -78,7 +81,7 @@ func (eData *EVSEdata) Read(b []byte) (int, error) {
 }
 
 func (eData *EVSEdata) ConnectionWriter() (URIpath string, payload []byte) {
-	ocppcc := <-eData.wDataCh
+	ocppcc := <-eData.write
 
 	p, _ := json.Marshal(ocppcc.Payload)
 	var sb strings.Builder
@@ -105,15 +108,15 @@ func (eData *EVSEdata) Write(data []byte) (n int, err error) {
 
 	ocppcc := &OCPPCC{}
 	ocppcc.Action 			= m["action"].(string)
-	ocppcc.ChargeBoxID 		= m["chargeBoxID"].(string)
-	ocppcc.MessageID 		= m["messageID"].(string)
-	ocppcc.MessageTypeID 	= m["messageTypeID"].(string)
+	ocppcc.ChargeBoxID 		= m["chargeBoxId"].(string)
+	ocppcc.MessageID 		= m["messageId"].(string)
+	ocppcc.MessageTypeID 	= m["messageTypeId"].(string)
 	ocppcc.Timestamp 		= uint32(m["timestamp"].(float64))
 	ocppcc.Payload 			= m["payload"].(map[string]interface {})
 
-	fmt.Println(len(eData.wDataCh))
+	fmt.Println(len(eData.write))
 
-	eData.wDataCh <- *ocppcc
+	eData.write <- *ocppcc
 	return len(data), nil
 }
 
@@ -124,15 +127,15 @@ func (eData *EVSEdata) Close() error {
 }
 
 func (eData *EVSEdata) ConnectEvent(URIpath string) {
-	eData.send(URIpath, "2", "Connect", nil)
+	eData.send(URIpath, call, "Connect", nil)
 }
 
 func (eData *EVSEdata) DisconnectEvent(URIpath string) {
-	eData.send(URIpath, "2", "Disconnect", nil)
+	eData.send(URIpath, call, "Disconnect", nil)
 }
 
-func (eData *EVSEdata) sendError(URIpath string, err error) {
-	eData.send(URIpath, "3", "Error", err)
+func (eData *EVSEdata) sendErrorToServer(URIpath string, err error) {
+	eData.send(URIpath, callError, "Error", err)
 }
 
 func (eData *EVSEdata) send(URIpath string, typeID string, action string, err error) {
@@ -150,7 +153,7 @@ func (eData *EVSEdata) send(URIpath string, typeID string, action string, err er
 	}
 	ocppcc.Payload = m
 
-	eData.rDataCh <- ocppcc
+	eData.read <- ocppcc
 }
 
 func floatToString(num float64) string {

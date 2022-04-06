@@ -78,11 +78,6 @@ func TestConvert(t *testing.T) {
 		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
-	t.Run("sends error to evse when message malformed", func(t *testing.T) {
-		t.SkipNow()
-		t.Fatal("Not imp")	
-	})
-
 	t.Run("populates messageID from ocpp byte array", func(t *testing.T) {
 
 		data := NewEVSEdata()

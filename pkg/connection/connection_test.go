@@ -44,10 +44,6 @@ func TestConnection(t *testing.T) {
 		
 	})
 
-	t.Run("return error when Read errors", func(t *testing.T) {
-		t.SkipNow()
-	})
-
 	// I don't why this fails
 	t.Run("calls disconnect when disconnected", func(t *testing.T) {
 
