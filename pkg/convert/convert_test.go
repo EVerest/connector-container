@@ -23,7 +23,7 @@ func TestConvert(t *testing.T) {
 
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, badMessageWrongCallTypeType)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
 
@@ -34,7 +34,7 @@ func TestConvert(t *testing.T) {
 		if got.Action != "Error" {
 			t.Fatalf("Want Error got %s", got.Action)
 		}
-		
+
 		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
@@ -43,7 +43,7 @@ func TestConvert(t *testing.T) {
 
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, badMessageMissingField)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
 
@@ -54,7 +54,7 @@ func TestConvert(t *testing.T) {
 		if got.Action != "Error" {
 			t.Fatalf("Want Error got %s", got.Action)
 		}
-		
+
 		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
@@ -63,7 +63,7 @@ func TestConvert(t *testing.T) {
 
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, badMessageMissingQuote)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
 
@@ -74,7 +74,7 @@ func TestConvert(t *testing.T) {
 		if got.Action != "Error" {
 			t.Fatalf("Want Error got %s", got.Action)
 		}
-		
+
 		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
@@ -82,10 +82,10 @@ func TestConvert(t *testing.T) {
 
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, message)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
-		
+
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)
@@ -97,13 +97,13 @@ func TestConvert(t *testing.T) {
 	})
 
 	t.Run("populates messageTypeID from ocpp byte array", func(t *testing.T) {
-		
+
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, message)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
-		
+
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)
@@ -115,13 +115,13 @@ func TestConvert(t *testing.T) {
 	})
 
 	t.Run("populates timestamp from ocpp byte array", func(t *testing.T) {
-		
+
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, message)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
-		
+
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)
@@ -133,51 +133,51 @@ func TestConvert(t *testing.T) {
 	})
 
 	t.Run("populates chargeBoxID from ocpp byte array", func(t *testing.T) {
-		
+
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, message)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
-		
+
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)
 		want := "a-charge-box-id"
 
-		if want != got.ChargeBoxID{
+		if want != got.ChargeBoxID {
 			t.Errorf("\ngot %s, \nwant %s", got.ChargeBoxID, want)
 		}
 	})
 
 	t.Run("populates action from ocpp byte array", func(t *testing.T) {
-		
+
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, message)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
-		
+
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)
 		want := "an-action"
 
-		if want != got.Action{
+		if want != got.Action {
 			t.Errorf("\ngot %s, \nwant %s", got.Action, want)
 		}
 	})
 
 	t.Run("populates payload from ocpp byte array", func(t *testing.T) {
 
-		type empty struct {}
-		
+		type empty struct{}
+
 		data := NewEVSEdata()
 		data.ConnectionReader(chargeBoxId, message)
-		
+
 		buf := make([]byte, 1024)
 		n, _ := data.Read(buf)
-		
+
 		sizedBuffer := buf[:n]
 		got := &OCPPCC{}
 		json.Unmarshal(sizedBuffer, got)

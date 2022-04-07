@@ -15,32 +15,33 @@ import (
 )
 
 type OCPPCC struct {
-	Timestamp     int64 					`json:"timestamp"`
-	MessageTypeID string					`json:"messageTypeId"`
-	ChargeBoxID   string 					`json:"chargeBoxId"`
-	MessageID     string 					`json:"messageId"`
-	Action        string 					`json:"action"`
-	Payload       map[string]interface {}	`json:"payload"`
+	Timestamp     int64                  `json:"timestamp"`
+	MessageTypeID string                 `json:"messageTypeId"`
+	ChargeBoxID   string                 `json:"chargeBoxId"`
+	MessageID     string                 `json:"messageId"`
+	Action        string                 `json:"action"`
+	Payload       map[string]interface{} `json:"payload"`
 }
 
 type EVSEdata struct {
-	read chan OCPPCC
+	read  chan OCPPCC
 	write chan OCPPCC
 }
 
 var eData EVSEdata
-const call 		= "2"
+
+const call = "2"
 const callError = "4"
 
 func NewEVSEdata() *EVSEdata {
 	eData = EVSEdata{}
 	eData.read = make(chan OCPPCC, 100)
 	eData.write = make(chan OCPPCC, 100)
-	
+
 	return &eData
 }
 
-func (eData *EVSEdata) ConnectionReader(URIpath string, b []byte) {	
+func (eData *EVSEdata) ConnectionReader(URIpath string, b []byte) {
 	ocppcc := OCPPCC{}
 	var arr []interface{}
 
@@ -57,12 +58,12 @@ func (eData *EVSEdata) ConnectionReader(URIpath string, b []byte) {
 
 	q := floatToString(arr[0].(float64))
 
-	ocppcc.MessageTypeID	= q
-	ocppcc.MessageID 		= fmt.Sprintf("%s", arr[1])
-	ocppcc.Action 			= fmt.Sprintf("%s", arr[2])
-	ocppcc.Timestamp 		= time.Now().UnixMilli()
-	ocppcc.Payload 			= arr[3].(map[string]interface {})
-	ocppcc.ChargeBoxID 		= URIpath
+	ocppcc.MessageTypeID = q
+	ocppcc.MessageID = fmt.Sprintf("%s", arr[1])
+	ocppcc.Action = fmt.Sprintf("%s", arr[2])
+	ocppcc.Timestamp = time.Now().UnixMilli()
+	ocppcc.Payload = arr[3].(map[string]interface{})
+	ocppcc.ChargeBoxID = URIpath
 
 	eData.read <- ocppcc
 }
@@ -76,7 +77,7 @@ func (eData *EVSEdata) Read(b []byte) (int, error) {
 	}
 
 	n := copy(b, bytes)
-    return n, nil
+	return n, nil
 }
 
 func (eData *EVSEdata) ConnectionWriter() (URIpath string, payload []byte) {
@@ -100,19 +101,19 @@ func (eData *EVSEdata) ConnectionWriter() (URIpath string, payload []byte) {
 
 func (eData *EVSEdata) Write(data []byte) (n int, err error) {
 	m := map[string]interface{}{}
-    e := json.Unmarshal([]byte(data), &m)
-    if e != nil {
+	e := json.Unmarshal([]byte(data), &m)
+	if e != nil {
 		eData.sendErrorToServer("unknown", "malformed write message")
-        return
-    }
+		return
+	}
 
 	ocppcc := &OCPPCC{}
-	ocppcc.Action 			= m["action"].(string)
-	ocppcc.ChargeBoxID 		= m["chargeBoxId"].(string)
-	ocppcc.MessageID 		= m["messageId"].(string)
-	ocppcc.MessageTypeID 	= m["messageTypeId"].(string)
-	ocppcc.Timestamp 		= int64(m["timestamp"].(float64))
-	ocppcc.Payload 			= m["payload"].(map[string]interface {})
+	ocppcc.Action = m["action"].(string)
+	ocppcc.ChargeBoxID = m["chargeBoxId"].(string)
+	ocppcc.MessageID = m["messageId"].(string)
+	ocppcc.MessageTypeID = m["messageTypeId"].(string)
+	ocppcc.Timestamp = int64(m["timestamp"].(float64))
+	ocppcc.Payload = m["payload"].(map[string]interface{})
 
 	eData.write <- *ocppcc
 	return len(data), nil
@@ -139,15 +140,16 @@ func (eData *EVSEdata) sendErrorToServer(URIpath string, err string) {
 func (eData *EVSEdata) send(URIpath string, typeID string, action string, err string) {
 	ocppcc := OCPPCC{}
 
-	ocppcc.MessageTypeID 	= typeID
-	ocppcc.Action 			= action
-	ocppcc.ChargeBoxID 		= URIpath
-	ocppcc.MessageID 		= uuid.NewString()
-	ocppcc.Timestamp 		= time.Now().UnixMilli()
+	ocppcc.MessageTypeID = typeID
+	ocppcc.Action = action
+	ocppcc.ChargeBoxID = URIpath
+	ocppcc.MessageID = uuid.NewString()
+	ocppcc.Timestamp = time.Now().UnixMilli()
 
 	m := make(map[string]interface{})
-
-	m["error"] = err
+	if err != "" {
+		m["error"] = err
+	}
 
 	ocppcc.Payload = m
 
@@ -155,6 +157,6 @@ func (eData *EVSEdata) send(URIpath string, typeID string, action string, err st
 }
 
 func floatToString(num float64) string {
-    s := fmt.Sprintf("%.4f", num)
-    return strings.TrimRight(strings.TrimRight(s, "0"), ".")
+	s := fmt.Sprintf("%.4f", num)
+	return strings.TrimRight(strings.TrimRight(s, "0"), ".")
 }

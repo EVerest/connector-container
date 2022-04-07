@@ -20,10 +20,10 @@ func TestConnection(t *testing.T) {
 	t.Run("calls connect when connected", func(t *testing.T) {
 		storage := &storeIt{}
 		doer := &doIt{}
-		options := ConnectionOptions {
-			SubProtocol: "ocpp1.6",
+		options := ConnectionOptions{
+			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
-			Converter: doer,
+			Converter:       doer,
 		}
 		NewConnectionHandler(options)
 
@@ -41,21 +41,21 @@ func TestConnection(t *testing.T) {
 		if !doer.connected {
 			t.Fatalf("no call to connect when connecting: %v", doer.rMessage)
 		}
-		
+
 	})
 
 	// I don't why this fails
 	t.Run("calls disconnect when disconnected", func(t *testing.T) {
 
 		t.SkipNow()
-		
+
 		storage := &storeIt{}
 		doer := &doIt{}
 		doer.connected = false
-		options := ConnectionOptions {
-			SubProtocol: "ocpp1.6",
+		options := ConnectionOptions{
+			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
-			Converter: doer,
+			Converter:       doer,
 		}
 		NewConnectionHandler(options)
 
@@ -76,10 +76,10 @@ func TestConnection(t *testing.T) {
 		if !doer.callDisconnect {
 			t.Fatalf("no call to disconnect when disconnecting: %v", doer.rMessage)
 		}
-		
+
 	})
 
-	t.Run ("accepts an upgraded connection to GET", func(t *testing.T) {
+	t.Run("accepts an upgraded connection to GET", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(handler))
 		defer server.Close()
 
@@ -93,11 +93,11 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("enforces ocpp1.6 sub protocol", func(t *testing.T) {
-		options := ConnectionOptions {
+		options := ConnectionOptions{
 			SubProtocol: "ocpp1.6",
 		}
 		NewConnectionHandler(options)
-		
+
 		server := httptest.NewServer(http.HandlerFunc(handler))
 		defer server.Close()
 
@@ -119,11 +119,11 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("enforces any sub protocol", func(t *testing.T) {
-		options := ConnectionOptions {
+		options := ConnectionOptions{
 			SubProtocol: "any",
 		}
 		NewConnectionHandler(options)
-		
+
 		server := httptest.NewServer(http.HandlerFunc(handler))
 		defer server.Close()
 
@@ -147,10 +147,10 @@ func TestConnection(t *testing.T) {
 	t.Run("saves connection when connected", func(t *testing.T) {
 		storage := &storeIt{}
 		doer := &doIt{}
-		options := ConnectionOptions {
-			SubProtocol: "ocpp1.6",
+		options := ConnectionOptions{
+			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
-			Converter: doer,
+			Converter:       doer,
 		}
 		NewConnectionHandler(options)
 
@@ -172,19 +172,19 @@ func TestConnection(t *testing.T) {
 }
 
 type doIt struct {
-	connectionWriter 	bool
-	connectionReader 	bool
-	rMessage 			string
-	connected			bool
-	callDisconnect		bool
+	connectionWriter bool
+	connectionReader bool
+	rMessage         string
+	connected        bool
+	callDisconnect   bool
 }
 
 func (d *doIt) ConnectionReader(URIpath string, b []byte) {
-	d.connectionReader = true	
+	d.connectionReader = true
 	d.rMessage = string(b)
 }
 
-func (d *doIt) ConnectionWriter() (URIpath string, payload []byte){
+func (d *doIt) ConnectionWriter() (URIpath string, payload []byte) {
 	d.connectionWriter = true
 	return "", nil
 }
@@ -199,8 +199,8 @@ func (d *doIt) DisconnectEvent(URIpath string) {
 }
 
 type storeIt struct {
-	put bool
-	get bool
+	put    bool
+	get    bool
 	delete bool
 }
 

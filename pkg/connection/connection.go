@@ -28,20 +28,21 @@ type converter interface {
 }
 
 type ConnectionOptions struct {
-	SubProtocol 		string
-	ConnectionStore 	connectionStore
-	Converter			converter 
+	SubProtocol     string
+	ConnectionStore connectionStore
+	Converter       converter
 }
 
 var cs connectionStore
 var subProtocol string
 var do converter
+
 const forwardSlash = "/"
 
 func NewConnectionHandler(connectionOptions ConnectionOptions) func(http.ResponseWriter, *http.Request) {
-	cs 			= connectionOptions.ConnectionStore
+	cs = connectionOptions.ConnectionStore
 	subProtocol = connectionOptions.SubProtocol
-	do 			= connectionOptions.Converter
+	do = connectionOptions.Converter
 
 	return handler
 }
@@ -65,15 +66,15 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 
 	go connectionWriter(&wg)
 	go connectionReader(URIpath, conn, &wg)
-	
+
 	wg.Wait()
 }
 
 func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
-	for {	
+	for {
 		_, message, err := conn.ReadMessage()
-		if err != nil { 
+		if err != nil {
 			do.DisconnectEvent(URIpath)
 			break
 		}
@@ -96,7 +97,7 @@ func connectionWriter(wg *sync.WaitGroup) {
 }
 
 func saveConnection(URIpath string, conn *websocket.Conn) bool {
-	return cs.Put(URIpath,conn)
+	return cs.Put(URIpath, conn)
 }
 
 func getConnection(URIpath string) *websocket.Conn {
