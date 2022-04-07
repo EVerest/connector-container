@@ -57,7 +57,7 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 		conn.Close()
 		return
 	}
-	saveConnection(URIpath, conn)
+	cs.Put(URIpath, conn)
 	do.ConnectEvent(URIpath)
 
 	var wg sync.WaitGroup
@@ -94,14 +94,6 @@ func connectionWriter(wg *sync.WaitGroup) {
 		}
 		conn.WriteMessage(1, payload)
 	}
-}
-
-func saveConnection(URIpath string, conn *websocket.Conn) bool {
-	return cs.Put(URIpath, conn)
-}
-
-func getConnection(URIpath string) *websocket.Conn {
-	return cs.Get(URIpath)
 }
 
 func getURIpath(request http.Request) string {
