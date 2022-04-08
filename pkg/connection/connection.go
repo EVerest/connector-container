@@ -1,6 +1,6 @@
 /**
  * Copyright 2022 Charge Net Stations and Contributors.
- * SPDX-License-Identifier: CC-BY-4.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package connection
@@ -27,28 +27,16 @@ type converter interface {
 	DisconnectEvent(URIpath string)
 }
 
-type ConnectionOptions struct {
+type ConnectionHandler struct {
 	SubProtocol     string
 	ConnectionStore connectionStore
 	Converter       converter
 }
 
-var cs connectionStore
-var subProtocol string
-var do converter
-
 const forwardSlash = "/"
 
-func NewConnectionHandler(connectionOptions ConnectionOptions) func(http.ResponseWriter, *http.Request) {
-	cs = connectionOptions.ConnectionStore
-	subProtocol = connectionOptions.SubProtocol
-	do = connectionOptions.Converter
-
-	return handler
-}
-
-func handler(writer http.ResponseWriter, request *http.Request) {
-	conn := upgrade(writer, request)
+func (ch *ConnectionHandler) Handler(writer http.ResponseWriter, request *http.Request) {
+	conn := upgrade(writer, request, ch.SubProtocol)
 	defer conn.Close()
 
 	URIpath := getURIpath(*request)
@@ -57,20 +45,20 @@ func handler(writer http.ResponseWriter, request *http.Request) {
 		conn.Close()
 		return
 	}
-	cs.Put(URIpath, conn)
-	do.ConnectEvent(URIpath)
+	ch.ConnectionStore.Put(URIpath, conn)
+	ch.Converter.ConnectEvent(URIpath)
 
 	var wg sync.WaitGroup
 
 	wg.Add(2)
 
-	go connectionWriter(&wg)
-	go connectionReader(URIpath, conn, &wg)
+	go connectionWriter(&wg, ch.ConnectionStore, ch.Converter)
+	go connectionReader(URIpath, conn, &wg, ch.Converter)
 
 	wg.Wait()
 }
 
-func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup) {
+func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup, do converter) {
 	defer wg.Done()
 	for {
 		_, message, err := conn.ReadMessage()
@@ -82,7 +70,7 @@ func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup) 
 	}
 }
 
-func connectionWriter(wg *sync.WaitGroup) {
+func connectionWriter(wg *sync.WaitGroup, cs connectionStore, do converter) {
 	defer wg.Done()
 	for {
 		path, payload := do.ConnectionWriter()
@@ -100,7 +88,7 @@ func getURIpath(request http.Request) string {
 	return strings.TrimPrefix(request.RequestURI, forwardSlash)
 }
 
-func upgrade(writer http.ResponseWriter, request *http.Request) *websocket.Conn {
+func upgrade(writer http.ResponseWriter, request *http.Request, subProtocol string) *websocket.Conn {
 	upgrader := websocket.Upgrader{Subprotocols: []string{subProtocol}}
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	conn, _ := upgrader.Upgrade(writer, request, nil)

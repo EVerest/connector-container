@@ -1,6 +1,6 @@
 /**
  * Copyright 2022 Charge Net Stations and Contributors.
- * SPDX-License-Identifier: CC-BY-4.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package connection
@@ -20,14 +20,13 @@ func TestConnection(t *testing.T) {
 	t.Run("calls connect when connected", func(t *testing.T) {
 		storage := &storeIt{}
 		doer := &doIt{}
-		options := ConnectionOptions{
+		ch := ConnectionHandler {
 			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
 			Converter:       doer,
 		}
-		NewConnectionHandler(options)
 
-		srv := httptest.NewServer(http.HandlerFunc(handler))
+		srv := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer srv.Close()
 
 		url := "ws" + strings.TrimPrefix(srv.URL, "http")
@@ -46,20 +45,19 @@ func TestConnection(t *testing.T) {
 
 	// I don't why this fails
 	t.Run("calls disconnect when disconnected", func(t *testing.T) {
-
 		t.SkipNow()
 
 		storage := &storeIt{}
 		doer := &doIt{}
 		doer.connected = false
-		options := ConnectionOptions{
+		ch := ConnectionHandler{
 			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
 			Converter:       doer,
 		}
-		NewConnectionHandler(options)
+		
 
-		srv := httptest.NewServer(http.HandlerFunc(handler))
+		srv := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer srv.Close()
 
 		url := "ws" + strings.TrimPrefix(srv.URL, "http")
@@ -80,7 +78,10 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("accepts an upgraded connection to GET", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(handler))
+		ch := ConnectionHandler {
+			SubProtocol:     "ocpp1.6",
+		}
+		server := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer server.Close()
 
 		url := "ws" + strings.TrimPrefix(server.URL, "http")
@@ -93,12 +94,11 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("enforces ocpp1.6 sub protocol", func(t *testing.T) {
-		options := ConnectionOptions{
+		ch := ConnectionHandler{
 			SubProtocol: "ocpp1.6",
 		}
-		NewConnectionHandler(options)
-
-		server := httptest.NewServer(http.HandlerFunc(handler))
+		
+		server := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer server.Close()
 
 		url := "ws" + strings.TrimPrefix(server.URL, "http")
@@ -119,12 +119,12 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("enforces any sub protocol", func(t *testing.T) {
-		options := ConnectionOptions{
+		ch := ConnectionHandler{
 			SubProtocol: "any",
 		}
-		NewConnectionHandler(options)
+		
 
-		server := httptest.NewServer(http.HandlerFunc(handler))
+		server := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer server.Close()
 
 		url := "ws" + strings.TrimPrefix(server.URL, "http")
@@ -147,14 +147,13 @@ func TestConnection(t *testing.T) {
 	t.Run("saves connection when connected", func(t *testing.T) {
 		storage := &storeIt{}
 		doer := &doIt{}
-		options := ConnectionOptions{
+		ch := ConnectionHandler{
 			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
 			Converter:       doer,
 		}
-		NewConnectionHandler(options)
-
-		srv := httptest.NewServer(http.HandlerFunc(handler))
+		
+		srv := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer srv.Close()
 
 		url := "ws" + strings.TrimPrefix(srv.URL, "http")

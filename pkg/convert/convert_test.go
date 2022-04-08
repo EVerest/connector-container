@@ -1,13 +1,12 @@
 /**
  * Copyright 2022 Charge Net Stations and Contributors.
- * SPDX-License-Identifier: CC-BY-4.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package convert
 
 import (
 	"encoding/json"
-	"log"
 	"testing"
 )
 
@@ -34,8 +33,6 @@ func TestConvert(t *testing.T) {
 		if got.Action != "Error" {
 			t.Fatalf("Want Error got %s", got.Action)
 		}
-
-		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
 	t.Run("sends error when missing fields", func(t *testing.T) {
@@ -54,8 +51,6 @@ func TestConvert(t *testing.T) {
 		if got.Action != "Error" {
 			t.Fatalf("Want Error got %s", got.Action)
 		}
-
-		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
 	t.Run("sends error to backend when message malformed", func(t *testing.T) {
@@ -74,8 +69,6 @@ func TestConvert(t *testing.T) {
 		if got.Action != "Error" {
 			t.Fatalf("Want Error got %s", got.Action)
 		}
-
-		log.Printf("Number: %d Buffer: %s", n, buf)
 	})
 
 	t.Run("populates messageID from ocpp byte array", func(t *testing.T) {

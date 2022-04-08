@@ -7,7 +7,7 @@ _Template - update with Adopted Date when TSC approves and send to operations@lf
 This charter (the "Charter") sets forth the responsibilities and procedures for technical contribution to, and oversight of, the OCPP Cloud Connector project, which has been established as OCPP Cloud Connector a Series of LF Projects, LLC (the "Project").  LF Projects, LLC ("LF Projects") is a Delaware series limited liability company. All Contributors to the Project must comply with the terms of this Charter.
 
 ## 1. Mission and Scope of the Project
-  * **a.** The mission of the Project is [MISSION].
+  * **a.** The mission of the Project is to support, educate and promote the expidited transition to electric mobility.
   * **b.** The scope of the Project includes software development under an OSI-approved open source license supporting the mission, including documentation, testing, integration and the creation of other artifacts that aid the development, deployment, operation or adoption of the open source software project.
 
 ## 2. Technical Steering Committee
@@ -57,7 +57,7 @@ This charter (the "Charter") sets forth the responsibilities and procedures for 
 ## 7. Intellectual Property Policy
   * **a.** Participants acknowledge that the copyright in all new contributions shall be retained by the copyright holder as independent works of authorship and that no contributor or copyright holder will be required to assign copyrights to the Project.
   * **b.** Except as described in Section 7.c., all code contributions to the Project are subject to the following:
-    * **i.** All new inbound code contributions to the Project must be made using the **[CC By, Version 2.0 (available here: https://spdx.org/licenses/CC-BY-4.0.html)]** (the "Project License").
+    * **i.** All new inbound code contributions to the Project must be made using the **[Apache License 2.0 (available here: https://spdx.org/licenses/Apache-2.0.html)]** (the "Project License").
     * **ii.** All new inbound code contributions must be accompanied by a Developer Certificate of Origin (http://developercertificate.org) sign-off in the source code system that is submitted through a TSC-approved contribution process which will bind the authorized contributor and, if not self-employed, their employer to the applicable license;
     * **iii.** All outbound code will be made available under the Project License.
     * **iv.** Documentation will be received and made available by the Project under the Creative Commons Attribution 4.0 International License (available at http://creativecommons.org/licenses/by/4.0/).

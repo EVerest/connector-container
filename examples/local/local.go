@@ -1,6 +1,6 @@
 /**
  * Copyright 2022 Charge Net Stations and Contributors.
- * SPDX-License-Identifier: CC-BY-4.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package main
@@ -20,17 +20,15 @@ import (
 func main() {
 	storage := make(store.LocalStore)
 	converter := convert.NewEVSEdata()
-	connectionOptions := connection.ConnectionOptions{
+	ch := connection.ConnectionHandler{
 		SubProtocol:     "ocpp1.6",
 		ConnectionStore: storage,
 		Converter:       converter,
 	}
 
-	connectionHandler := connection.NewConnectionHandler(connectionOptions)
-
 	serverOptions := server.ServerOptions{
 		Addr:            "0.0.0.0:8080",
-		Handler:         connectionHandler,
+		Handler:         ch.Handler,
 		RootPath:        "/",
 		HealthCheckPath: "/health",
 	}

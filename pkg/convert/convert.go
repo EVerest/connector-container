@@ -1,6 +1,6 @@
 /**
  * Copyright 2022 Charge Net Stations and Contributors.
- * SPDX-License-Identifier: CC-BY-4.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package convert
@@ -150,7 +150,6 @@ func (eData *EVSEdata) send(URIpath string, typeID string, action string, err st
 	if err != "" {
 		m["error"] = err
 	}
-
 	ocppcc.Payload = m
 
 	eData.read <- ocppcc
