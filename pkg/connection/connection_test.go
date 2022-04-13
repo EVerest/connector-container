@@ -20,7 +20,7 @@ func TestConnection(t *testing.T) {
 	t.Run("calls connect when connected", func(t *testing.T) {
 		storage := &storeIt{}
 		doer := &doIt{}
-		ch := ConnectionHandler {
+		ch := ConnectionHandler{
 			SubProtocol:     "ocpp1.6",
 			ConnectionStore: storage,
 			Converter:       doer,
@@ -55,7 +55,6 @@ func TestConnection(t *testing.T) {
 			ConnectionStore: storage,
 			Converter:       doer,
 		}
-		
 
 		srv := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer srv.Close()
@@ -78,8 +77,8 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("accepts an upgraded connection to GET", func(t *testing.T) {
-		ch := ConnectionHandler {
-			SubProtocol:     "ocpp1.6",
+		ch := ConnectionHandler{
+			SubProtocol: "ocpp1.6",
 		}
 		server := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer server.Close()
@@ -97,7 +96,7 @@ func TestConnection(t *testing.T) {
 		ch := ConnectionHandler{
 			SubProtocol: "ocpp1.6",
 		}
-		
+
 		server := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer server.Close()
 
@@ -122,7 +121,6 @@ func TestConnection(t *testing.T) {
 		ch := ConnectionHandler{
 			SubProtocol: "any",
 		}
-		
 
 		server := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer server.Close()
@@ -152,7 +150,7 @@ func TestConnection(t *testing.T) {
 			ConnectionStore: storage,
 			Converter:       doer,
 		}
-		
+
 		srv := httptest.NewServer(http.HandlerFunc(ch.Handler))
 		defer srv.Close()
 
@@ -170,11 +168,11 @@ func TestConnection(t *testing.T) {
 	})
 
 	t.Run("drops messages for clients that are not connected", func(t *testing.T) {
-		
+
 	})
 
 	t.Run("returns ack on successful send", func(t *testing.T) {
-		
+
 	})
 }
 
