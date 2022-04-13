@@ -35,8 +35,8 @@ const callError = "4"
 
 func NewEVSEdata() *EVSEdata {
 	eData = EVSEdata{}
-	eData.read = make(chan OCPPCC, 100)
-	eData.write = make(chan OCPPCC, 100)
+	eData.read = make(chan OCPPCC, 1)
+	eData.write = make(chan OCPPCC, 1)
 
 	return &eData
 }

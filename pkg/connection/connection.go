@@ -53,17 +53,18 @@ func (ch *ConnectionHandler) Handler(writer http.ResponseWriter, request *http.R
 	wg.Add(2)
 
 	go connectionWriter(&wg, ch.ConnectionStore, ch.Converter)
-	go connectionReader(URIpath, conn, &wg, ch.Converter)
+	go connectionReader(URIpath, conn, &wg, ch.Converter, ch.ConnectionStore)
 
 	wg.Wait()
 }
 
-func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup, do converter) {
+func connectionReader(URIpath string, conn *websocket.Conn, wg *sync.WaitGroup, do converter, cs connectionStore) {
 	defer wg.Done()
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			do.DisconnectEvent(URIpath)
+			cs.Delete(URIpath)
 			break
 		}
 		do.ConnectionReader(URIpath, message)
@@ -74,7 +75,6 @@ func connectionWriter(wg *sync.WaitGroup, cs connectionStore, do converter) {
 	defer wg.Done()
 	for {
 		path, payload := do.ConnectionWriter()
-
 		conn := cs.Get(path)
 		if conn == nil {
 			log.Printf("no connection for path %s", path)

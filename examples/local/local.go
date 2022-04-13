@@ -6,8 +6,11 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"io"
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -20,6 +23,7 @@ import (
 func main() {
 	storage := make(store.LocalStore)
 	converter := convert.NewEVSEdata()
+
 	ch := connection.ConnectionHandler{
 		SubProtocol:     "ocpp1.6",
 		ConnectionStore: storage,
@@ -34,15 +38,28 @@ func main() {
 	}
 
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(5)
 
 	go server.StartServer(serverOptions)
 
 	go readThis(converter, &wg)
 	go writeToCat(converter, &wg)
 	go writeToDog(converter, &wg)
+	go writeToBob(converter, &wg)
+	// go writeFromConsole(converter, &wg)
 
 	wg.Wait()
+}
+
+func writeFromConsole(t *convert.EVSEdata, wg *sync.WaitGroup) {
+	defer wg.Done()
+	reader := bufio.NewReader(os.Stdin)
+	text, _ := reader.ReadString('\n')
+	_, err := t.Write([]byte(text))
+		if err != nil {
+			log.Println("Error")
+		}
+
 }
 
 func readThis(t *convert.EVSEdata, wg *sync.WaitGroup) {
@@ -59,26 +76,49 @@ func readThis(t *convert.EVSEdata, wg *sync.WaitGroup) {
 
 func writeToCat(t *convert.EVSEdata, wg *sync.WaitGroup) {
 	defer wg.Done()
-	ocppccMessage := []byte(`{"timestamp":3712349825,"messageTypeId":"2","chargeBoxId":"cat","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
+	
 	for {
+		ocppccMessage := []byte(`{"timestamp":`+ getTime() + `,"messageTypeId":"2","chargeBoxId":"cat","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
 		time.Sleep(1 * time.Second)
-		log.Printf("Write: %s", ocppccMessage)
 		_, err := t.Write(ocppccMessage)
 		if err != nil {
 			log.Println("Error")
 		}
+		log.Printf("Wrote: %s", ocppccMessage)
 	}
 }
 
 func writeToDog(t *convert.EVSEdata, wg *sync.WaitGroup) {
 	defer wg.Done()
-	badOCPPCCMessage := []byte(`{"timestamp:3712349825,"messageTypeId":"2","chargeBoxId":"dog","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
+	
 	for {
+		badOCPPCCMessage := []byte(`{"timestamp":`+ getTime() + `,"messageTypeId":"2","chargeBoxId":"dog","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
 		time.Sleep(1 * time.Second)
-		log.Printf("Write: %s", badOCPPCCMessage)
 		_, err := t.Write(badOCPPCCMessage)
 		if err != nil {
 			log.Println("Error")
 		}
+		log.Printf("Write: %s", badOCPPCCMessage)
 	}
 }
+
+func writeToBob(t *convert.EVSEdata, wg *sync.WaitGroup) {
+	defer wg.Done()
+	
+	for {
+		badOCPPCCMessage := []byte(`{"timestamp":`+ getTime() + `,"messageTypeId":"2","chargeBoxId":"bob","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
+		time.Sleep(1 * time.Second)
+		_, err := t.Write(badOCPPCCMessage)
+		if err != nil {
+			log.Println("Error")
+		}
+		log.Printf("Write: %s", badOCPPCCMessage)
+	}
+}
+
+func getTime() string {
+	return fmt.Sprintf("%d", time.Now().UnixMilli())
+}
+
+// {"timestamp":1649433271379,"messageTypeId":"2","chargeBoxId":"cat","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}
+// {"timestamp":1649433271379,"messageTypeId":"2","chargeBoxId":"dog","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}

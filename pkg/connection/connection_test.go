@@ -168,6 +168,14 @@ func TestConnection(t *testing.T) {
 			t.Fatal("Put not called")
 		}
 	})
+
+	t.Run("drops messages for clients that are not connected", func(t *testing.T) {
+		
+	})
+
+	t.Run("returns ack on successful send", func(t *testing.T) {
+		
+	})
 }
 
 type doIt struct {
