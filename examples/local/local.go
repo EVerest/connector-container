@@ -56,9 +56,9 @@ func writeFromConsole(t *convert.EVSEdata, wg *sync.WaitGroup) {
 	reader := bufio.NewReader(os.Stdin)
 	text, _ := reader.ReadString('\n')
 	_, err := t.Write([]byte(text))
-		if err != nil {
-			log.Println("Error")
-		}
+	if err != nil {
+		log.Println("Error")
+	}
 
 }
 
@@ -76,9 +76,9 @@ func readThis(t *convert.EVSEdata, wg *sync.WaitGroup) {
 
 func writeToCat(t *convert.EVSEdata, wg *sync.WaitGroup) {
 	defer wg.Done()
-	
+
 	for {
-		ocppccMessage := []byte(`{"timestamp":`+ getTime() + `,"messageTypeId":"2","chargeBoxId":"cat","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
+		ocppccMessage := []byte(`{"timestamp":` + getTime() + `,"messageTypeId":"2","chargeBoxId":"cat","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
 		time.Sleep(1 * time.Second)
 		_, err := t.Write(ocppccMessage)
 		if err != nil {
@@ -90,9 +90,9 @@ func writeToCat(t *convert.EVSEdata, wg *sync.WaitGroup) {
 
 func writeToDog(t *convert.EVSEdata, wg *sync.WaitGroup) {
 	defer wg.Done()
-	
+
 	for {
-		badOCPPCCMessage := []byte(`{"timestamp":`+ getTime() + `,"messageTypeId":"2","chargeBoxId":"dog","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
+		badOCPPCCMessage := []byte(`{"timestamp":` + getTime() + `,"messageTypeId":"2","chargeBoxId":"dog","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
 		time.Sleep(1 * time.Second)
 		_, err := t.Write(badOCPPCCMessage)
 		if err != nil {
@@ -104,9 +104,9 @@ func writeToDog(t *convert.EVSEdata, wg *sync.WaitGroup) {
 
 func writeToBob(t *convert.EVSEdata, wg *sync.WaitGroup) {
 	defer wg.Done()
-	
+
 	for {
-		badOCPPCCMessage := []byte(`{"timestamp":`+ getTime() + `,"messageTypeId":"2","chargeBoxId":"bob","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
+		badOCPPCCMessage := []byte(`{"timestamp":` + getTime() + `,"messageTypeId":"2","chargeBoxId":"bob","messageId":"a-message-id","action":"BootNotification","payload":{"dog":"cat"}}`)
 		time.Sleep(1 * time.Second)
 		_, err := t.Write(badOCPPCCMessage)
 		if err != nil {
