@@ -35,4 +35,4 @@ Anyone can contribute to the OCPP Cloud Connector project - learn more at [CONTR
 OCPP Cloud Connector is a project hosted by the [LF Energy Foundation](https://lfenergy.org). This project's techincal charter is located in [CHARTER.md](tsc/CHARTER.md) and has established it's own processes for managing day-to-day processes in the project at [GOVERNANCE.md](GOVERNANCE.md).
 
 ## Reporting Issues
-o report a problem, you can open an [issue](https://github.com/ChargeNet-Stations/ocpp-cloud-connector/issues) in repository against a specific workflow.
+To report a problem, you can open an [issue](https://github.com/ChargeNet-Stations/ocpp-cloud-connector/issues) in repository against a specific workflow.
